@@ -5,10 +5,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app)
 
-@app.route('/hello')
-def hello():
-	print(url_for('hello'))
-	return "hiadb"
+#@socketio.on('join')
+#def on_join(data):
+
 
 @socketio.on('message')
 def handleMessage(msg):

@@ -6,6 +6,7 @@ class MessageEnterField extends Component {
     this.state = {value: ''};
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleEnter = this.handleEnter.bind(this);
   }
 
@@ -13,16 +14,22 @@ class MessageEnterField extends Component {
     this.setState({value: event.target.value});
   }
 
+  handleKeyPress(event) {
+    if (event.key == 'Enter') {
+      this.props.socket.emit('message', this.state.value);
+      this.setState({value: ''});
+    }
+  }
+
   handleEnter(event) {
-    // TODO
-    this.setState({value: ''});
     this.props.socket.emit('message', this.state.value);
+    this.setState({value: ''});
   }
 
   render() {
     return (
       <div>
-        <input type="text" value={this.state.value} onChange={this.handleChange} />
+        <input type="text" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
         <button onClick={this.handleEnter}>Enter</button>
       </div>
     );
