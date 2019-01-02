@@ -22,9 +22,6 @@ class MessageEnterField extends Component {
   render() {
     return (
       <div>
-        <p>
-          Message:
-        </p>
         <input type="text" value={this.state.value} onChange={this.handleChange} />
         <button onClick={this.handleEnter}>Enter</button>
       </div>
