@@ -9,6 +9,7 @@ class NameBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      username: '',
       value: '',
       listUsers: ['']
     };
@@ -21,6 +22,9 @@ class NameBox extends Component {
   }
 
   add(data) {
+    if (data === this.state.username) {
+      return;
+    }
     this.setState({
       listUsers: [...new Set([...this.state.listUsers, data].sort())]
     });
@@ -58,6 +62,12 @@ class NameBox extends Component {
   }
 
   onEnter() {
+    if (!this.state.value) {
+      return;
+    }
+    this.setState({
+      username: this.state.value
+    });
     this.props.onUpdate(this.state.value);
     this.setState({value: ''});
   }
