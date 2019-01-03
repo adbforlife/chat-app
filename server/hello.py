@@ -72,14 +72,14 @@ def on_join(data):
 		return False
 	room = data['room']
 	join_room(room)
-	send(username + ' has entered the room.' + room + '\n\n', room=room)
+	emit('rooms', username + ' has entered the room.' + room + '\n\n', room=room)
 
 @socketio.on('leave')
 def on_leave(data):
     username = data['username']
     room = data['room']
     leave_room(room)
-    send(username + ' has left the room.', room=room)
+    emit('rooms', username + ' has left the room.', room=room)
 
 
 if __name__ == '__main__':

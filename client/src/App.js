@@ -11,11 +11,9 @@ class App extends Component {
     super(props);
     this.state = {
       username: '',
-      test: "gg",
-      response: false,
-      endpoint: "http:127.0.0.1:5001"
+      rooms: []
     }
-    this.setState = this.setState.bind(this);
+    //this.setState = this.setState.bind(this);
   }
 
   changeUserName = (name) => {
@@ -42,12 +40,6 @@ class App extends Component {
         socket.emit('init', this.state.username);
       }
     })
-
-    socket.on('message', (msg) => {
-      this.setState({
-        test: msg
-      })
-    });
   }
 
   render() {

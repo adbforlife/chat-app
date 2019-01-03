@@ -1,89 +1,29 @@
 import React, { Component } from 'react';
-import { Button, Input } from 'reactstrap';
-
-function ListItem(props) {
-  return <option>{props.value}</option>;
-}
+import NameEnterField from './NameEnterField';
+import NameDropdown from './NameDropdown';
 
 class NameBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
-      value: '',
-      listUsers: ['']
     };
 
-    this.add = this.add.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleEnter = this.handleEnter.bind(this);
-    this.onEnter = this.onEnter.bind(this);
+    this.onUpdate = this.onUpdate.bind(this);
   }
 
-  add(data) {
-    if (data === this.state.username) {
-      return;
-    }
+  onUpdate(val) {
+    this.props.onUpdate(val);
     this.setState({
-      listUsers: [...new Set([...this.state.listUsers, data].sort())]
+      username: val
     });
-  }
-
-  componentDidMount() {
-    this.props.socket.emit('broadcast_request');
-
-    this.props.socket.on('init', this.add);
-    setTimeout(function () {
-      this.props.socket.removeListener('init', this.add);
-    }.bind(this), 3000);
-
-    this.props.socket.on('user_list_add', this.add);
-
-    this.props.socket.on('user_list_del', (data) => {
-      this.setState({listUsers: this.state.listUsers.filter(function(username) { 
-        return username !== data;
-      })});
-    });
-  }
-
-  handleChange(event) {
-    this.setState({value: event.target.value});
-  }
-
-  handleKeyPress(event) {
-    if (event.key === 'Enter') {
-      this.onEnter();
-    }
-  }
-
-  handleEnter(event) {
-    this.onEnter();
-  }
-
-  onEnter() {
-    if (!this.state.value) {
-      return;
-    }
-    this.setState({
-      username: this.state.value
-    });
-    this.props.onUpdate(this.state.value);
-    this.setState({value: ''});
   }
 
   render() {
     return (
       <div>
-        <label>Your name: </label>
-        <Input type="text" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
-        <Button onClick={this.handleEnter}>Enter</Button>
-        <label> Start a conversation: </label>
-        <select>
-          {this.state.listUsers.map((item, index) => 
-            <ListItem key={index} value={item}/>
-          )}
-        </select>
+        <NameEnterField onUpdate={this.onUpdate}/>
+        <NameDropdown username={this.state.username} socket={this.props.socket}/>
       </div>
     );
   }
