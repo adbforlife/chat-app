@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, Input } from 'reactstrap';
 
 class MessageEnterField extends Component {
   constructor(props) {
@@ -30,8 +31,8 @@ class MessageEnterField extends Component {
     return (
       <div>
         <label>Message: </label>
-        <input type="text" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
-        <button onClick={this.handleEnter}>Enter</button>
+        <Input placeholder="Type a message..." type="text" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
+        <Button onClick={this.handleEnter}>Enter</Button>
       </div>
     );
   }

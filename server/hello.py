@@ -45,6 +45,7 @@ def on_active_user(data):
     user = data.get('username')
     emit('user_activated', {'user': user}, broadcast=True)'''
 
+# Handle usernames
 @socketio.on('broadcast_request')
 def request():
 	emit('username_request', broadcast=True)
@@ -60,6 +61,7 @@ def user_add(data):
 @socketio.on('broadcast_del')
 def user_del(data):
 	emit('user_list_del', data, broadcast=True)
+
 
 @socketio.on('join')
 def on_join(data):

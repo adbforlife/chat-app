@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import MessageEnterField from './MessageEnterField';
+import { Button, Container, Row, Col } from 'reactstrap'; 
+
 
 function ListItem(props) {
   return <li>{props.value}</li>;
@@ -26,14 +28,23 @@ class MessageBox extends Component {
 
   render() {
     return (
-      <div>
-        <ul>
-          {this.state.listItems.map((item, index) =>
-            <ListItem key={index} value={item}/>
-          )}
-        </ul>
-        <MessageEnterField socket={this.props.socket}/>
-      </div>
+      <Container>
+        <Row>
+          <Button close />
+        </Row>
+        <Row>
+          <Col>
+            <ul>
+              {this.state.listItems.map((item, index) =>
+                <ListItem key={index} value={item}/>
+              )}
+            </ul>
+          </Col>
+        </Row>
+        <Row>
+          <MessageEnterField socket={this.props.socket}/>
+        </Row>
+      </Container>
     );
   }
 }

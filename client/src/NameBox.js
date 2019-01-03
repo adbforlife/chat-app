@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, Input } from 'reactstrap';
 
 function ListItem(props) {
   return <option>{props.value}</option>;
@@ -65,8 +66,8 @@ class NameBox extends Component {
     return (
       <div>
         <label>Your name: </label>
-        <input type="text" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
-        <button onClick={this.handleEnter}>Enter</button>
+        <Input type="text" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
+        <Button onClick={this.handleEnter}>Enter</Button>
         <label> Start a conversation: </label>
         <select>
           {this.state.listUsers.map((item, index) => 

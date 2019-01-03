@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import io from 'socket.io-client';
 import MessageBox from './MessageBox';
 import NameBox from './NameBox';
+import { Container, Row, Col } from 'reactstrap';
 const socket = io('http://localhost:5001');
 
 class App extends Component {
@@ -56,26 +56,19 @@ class App extends Component {
       greeting = <h1>Hello, {this.state.username}!</h1>;
     }
     return (
-      <div className="App">
-        <header className="App-header">
-          {greeting}
-          <NameBox onUpdate={this.changeUserName} socket={socket}/>
-          <MessageBox socket={socket} />
-          <p></p><p></p><p></p>
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload {this.state.test}.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Container>
+        <Row>
+          <Col>
+            {greeting}
+            <NameBox onUpdate={this.changeUserName} socket={socket}/>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs = "6" sm = "3">
+            <MessageBox socket={socket} />
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
