@@ -1,5 +1,5 @@
 from flask import Flask, url_for
-from flask_socketio import SocketIO, send, join_room, leave_room
+from flask_socketio import SocketIO, emit, send, join_room, leave_room
 import json
 
 
@@ -45,6 +45,21 @@ def on_active_user(data):
     user = data.get('username')
     emit('user_activated', {'user': user}, broadcast=True)'''
 
+@socketio.on('broadcast_request')
+def request():
+	emit('username_request', broadcast=True)
+
+@socketio.on('init')
+def initial_add(data):
+	emit('init', data, broadcast=True)
+
+@socketio.on('broadcast_add')
+def user_add(data):
+	emit('user_list_add', data, broadcast=True)
+
+@socketio.on('broadcast_del')
+def user_del(data):
+	emit('user_list_del', data, broadcast=True)
 
 @socketio.on('join')
 def on_join(data):
@@ -66,5 +81,5 @@ def on_leave(data):
 
 
 if __name__ == '__main__':
+	tempUsers = []
 	socketio.run(app, host='127.0.0.1', port=5001, debug=True)
-	print(url_for('hello'))

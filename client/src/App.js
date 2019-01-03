@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import io from 'socket.io-client';
 import MessageBox from './MessageBox';
-import NameEnterField from './NameEnterField';
+import NameBox from './NameBox';
 const socket = io('http://localhost:5001');
 
 class App extends Component {
@@ -19,18 +19,30 @@ class App extends Component {
   }
 
   changeUserName = (name) => {
+    if (this.state.username) {
+      socket.emit('broadcast_del', this.state.username);
+    }
     this.setState({
       username: name
     });
+    socket.emit('broadcast_add', name);
   }
 
   componentDidMount() {
+    //socket.join('room1')
+    //var roster = io.sockets.clients('chatroom1');
+
     socket.emit('join', JSON.stringify({
       'username': this.state.username,
       'room': 'room'
     }));
 
-    //socket.emit('message', "fuck");
+    socket.on('username_request', () => {
+      if (this.state.username) {
+        socket.emit('init', this.state.username);
+      }
+    })
+
     socket.on('message', (msg) => {
       this.setState({
         test: msg
@@ -47,7 +59,7 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           {greeting}
-          <NameEnterField onUpdate={this.changeUserName} />
+          <NameBox onUpdate={this.changeUserName} socket={socket}/>
           <MessageBox socket={socket} />
           <p></p><p></p><p></p>
           <img src={logo} className="App-logo" alt="logo" />
