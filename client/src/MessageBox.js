@@ -32,7 +32,7 @@ class MessageBox extends Component {
         <Row>
           <MessageNavbar other_user={this.props.other_user} onClose={this.props.onClose}/>
         </Row>
-        <MessageBody username={this.props.username} other_user={this.props.other_user} changeIsAlone={this.changeIsAlone} socket={this.props.socket} />
+        <MessageBody username={this.props.username} other_user={this.props.other_user} isAlone={this.state.isAlone} changeIsAlone={this.changeIsAlone} socket={this.props.socket} />
         <Row>
           <MessageEnterField username={this.props.username} other_user={this.props.other_user} socket={this.props.socket}/>
         </Row>
