@@ -31,27 +31,28 @@ class App extends Component {
         return false;
     }
     console.log("conversing with " + other_user);
+    let room = {
+      username: this.state.username,
+      name: [this.state.username, other_user].sort().join(''),
+      other_user: other_user,
+      history: []
+    }
     this.setState({
-      rooms: [...this.state.rooms, {
-        name: [this.state.username, other_user].sort().join(''),
-        other_user: other_user,
-        history: []
-      }]
+      rooms: [...this.state.rooms, room]
     });
     setTimeout(function () {
       console.log(this.state.rooms);
     }.bind(this), 3000);
-    //console.log(this.state.rooms);
+    //console.log(JSON.stringify(room))
+    socket.emit('join', JSON.stringify(room))
   }
 
   componentDidMount() {
-    //socket.join('room1')
-    //var roster = io.sockets.clients('chatroom1');
 
-    socket.emit('join', JSON.stringify({
+    /*socket.emit('join', JSON.stringify({
       'username': this.state.username,
       'room': 'room'
-    }));
+    }));*/
 
     socket.on('username_request', () => {
       if (this.state.username) {

@@ -69,14 +69,17 @@ def user_del(data):
 
 @socketio.on('join')
 def on_join(data):
-	data = json.loads(data)
-	print(data['username'] + ' joining')
-	username = data['username']
-	if not username:
-		return False
-	room = data['room']
-	join_room(room)
-	emit('rooms', username + ' has entered the room.' + room + '\n\n', room=room)
+    data = json.loads(data)
+    print(data['username'] + ' joining')
+    username = data['username']
+    if not username:
+    	return False
+    room = data['name']
+    other_user = data['other_user']
+    history = data['history']
+    join_room(room)
+    print(data['username'] + ' joined room ' + room + '\n')
+    emit('rooms', username + ' has entered the room.' + room + '\n\n', room=room)
 
 @socketio.on('leave')
 def on_leave(data):
