@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Input } from 'reactstrap';
 
+let maxLength = 16;
+
 class NameEnterField extends Component {
   constructor(props) {
     super(props);
@@ -16,6 +18,7 @@ class NameEnterField extends Component {
   }
 
   handleChange(event) {
+    if (event.target.value.length > maxLength) return;
     this.setState({value: event.target.value});
   }
 
