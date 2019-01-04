@@ -10,6 +10,7 @@ class MessageEnterField extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleEnter = this.handleEnter.bind(this);
+    this.onEnter = this.onEnter.bind(this);
   }
 
   handleChange(event) {
@@ -18,13 +19,21 @@ class MessageEnterField extends Component {
 
   handleKeyPress(event) {
     if (event.key === 'Enter') {
-      this.props.socket.emit('message', this.state.value);
-      this.setState({value: ''});
+      this.onEnter();
     }
   }
 
   handleEnter(event) {
-    this.props.socket.emit('message', this.state.value);
+    this.onEnter();
+  }
+
+  onEnter() {
+    if (!this.state.value) return;
+    this.props.socket.emit('message', JSON.stringify({
+      msg: this.state.value,
+      username: this.props.username,
+      room: this.props.room
+    }));
     this.setState({value: ''});
   }
 
@@ -40,6 +49,8 @@ class MessageEnterField extends Component {
 }
 
 MessageEnterField.propTypes = {
+  username: PropTypes.string.isRequired,
+  room: PropTypes.string.isRequired,
   socket: PropTypes.object.isRequired
 };
 

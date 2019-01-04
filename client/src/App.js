@@ -77,7 +77,7 @@ class App extends Component {
           {this.state.rooms.map((room) => {
             return (
               <Col key={room['name']} xs="6" sm="3">
-                <MessageBox key={room['name']} other_user={room['other_user']} history={room['history']} socket={socket} />
+                <MessageBox username={this.state.username} room={room['name']} other_user={room['other_user']} history={room['history']} socket={socket} />
               </Col>
             )
           })}

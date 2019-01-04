@@ -8,6 +8,29 @@ app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app)
 
 
+@socketio.on('broadcast_request')
+def request():
+    emit('username_request', broadcast=True)
+
+@socketio.on('init')
+def initial_add(data):
+    if not data:
+        return
+    emit('init', data, broadcast=True)
+
+@socketio.on('broadcast_add')
+def user_add(data):
+    if not data:
+        return
+    emit('user_list_add', data, broadcast=True)
+
+@socketio.on('broadcast_del')
+def user_del(data):
+    if not data:
+        return
+    emit('user_list_del', data, broadcast=True)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Here we use a class of some kind to represent and validate our
@@ -32,9 +55,16 @@ def login():
 
 
 @socketio.on('message')
-def handle_message(msg):
-	#print('Message: ' + msg)
-	emit('message', msg, broadcast=True)
+def handle_message(data):
+    try:
+        data = json.loads(data)
+        msg = data['msg']
+        username = data['username']
+        room = data['room']
+    except:
+        print("something is wrong\n\n\n")
+        return False
+    emit('message', (username, msg, room), room=room)
 
 @socketio.on('connect')
 def on_connect():
@@ -44,49 +74,24 @@ def on_connect():
 def on_disconnect():
     emit('refresh', broadcast=True)
 
-'''@socket.on('activate_user')
-def on_active_user(data):
-    user = data.get('username')
-    emit('user_activated', {'user': user}, broadcast=True)'''
 
-# Handle usernames
-@socketio.on('broadcast_request')
-def request():
-	emit('username_request', broadcast=True)
-
-@socketio.on('init')
-def initial_add(data):
-    if not data:
-        return
-    emit('init', data, broadcast=True)
-
-@socketio.on('broadcast_add')
-def user_add(data):
-    if not data:
-        return
-    emit('user_list_add', data, broadcast=True)
-
-@socketio.on('broadcast_del')
-def user_del(data):
-    if not data:
-        return
-    emit('user_list_del', data, broadcast=True)
 
 
 @socketio.on('join')
 def on_join(data):
     try:
         data = json.loads(data)
-        print(data['username'] + ' joining')
         username = data['username']
         if not username:
             return False
-    except: pass
+    except:
+        print("something is wrong\n\n\n")
+        return False
     room = data['name']
     other_user = data['other_user']
     history = data['history']
     join_room(room)
-    print(data['username'] + ' joined room ' + room + '\n')
+    print(data['username'] + ' joined room ' + room)
     emit('rooms', username + ' has entered the room.' + room + '\n\n', room=room)
 
 @socketio.on('leave')
