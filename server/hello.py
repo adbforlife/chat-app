@@ -33,7 +33,7 @@ def login():
 
 @socketio.on('message')
 def handle_message(msg):
-	print('Message: ' + msg)
+	#print('Message: ' + msg)
 	emit('message', msg, broadcast=True)
 
 @socketio.on('connect')

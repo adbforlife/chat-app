@@ -60,10 +60,6 @@ class App extends Component {
     })
   }
 
-  componentWillUnmount() {
-    socket.emit('broadcast_del', this.state.username);
-  }
-
   render() {
     let greeting;
     if (this.state.username) {
