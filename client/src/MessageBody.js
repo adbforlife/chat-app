@@ -12,7 +12,7 @@ class MessageBody extends Component {
     this.state = {
       history: []
     };
-    
+
     this.updateHistory = this.updateHistory.bind(this);
   }
 
@@ -30,10 +30,15 @@ class MessageBody extends Component {
     });
 
     this.props.socket.on('enter_exit', (msg,username,other_user) => {
-      console.log("got a message!");
+      console.log("got a good message!" + msg + username + other_user);
       if ((other_user !== this.props.other_user || username !== this.props.username) && (other_user !== this.props.username || username !== this.props.other_user)) return;
       this.updateHistory(msg);
     });
+  }
+
+  componentWillUnmount() {
+    this.props.socket.removeAllListeners('message');
+    this.props.socket.removeAllListeners('enter_exit');
   }
 
   render() {

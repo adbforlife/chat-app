@@ -13,6 +13,8 @@ class App extends Component {
       username: '',
       rooms: []
     }
+
+    this.getRoomName = this.getRoomName.bind(this);
   }
 
   changeUsername = (name) => {
@@ -25,6 +27,10 @@ class App extends Component {
     socket.emit('broadcast_add', name);
   }
 
+  getRoomName(username, other_user) {
+    return [this.state.username, other_user].sort().join('');
+  }
+
   addRoom = (other_user) => {
     for (var i = 0; i < this.state.rooms.length; i++) {
       if (this.state.rooms[i]['other_user'] === other_user)
@@ -33,21 +39,31 @@ class App extends Component {
     console.log("conversing with " + other_user);
     let room = {
       username: this.state.username,
-      name: [this.state.username, other_user].sort().join(''),
+      name: this.getRoomName(this.state.username, other_user),
       other_user: other_user,
       history: []
     }
     this.setState({
       rooms: [...this.state.rooms, room]
     });
-    setTimeout(function () {
-      console.log(this.state.rooms);
-    }.bind(this), 3000);
-    socket.emit('join', JSON.stringify(room))
+    socket.emit('join', JSON.stringify(room));
+  }
+
+  delRoom = (other_user) => {
+    let room_name = this.getRoomName(this.state.username, other_user);
+    console.log("closing" + room_name)
+    this.setState({rooms: this.state.rooms.filter(function(room) { 
+        return room['name'] !== room_name;
+    })});
+    let room = {
+      username: this.state.username,
+      other_user: other_user,
+      history: []
+    }
+    socket.emit('leave', JSON.stringify(room));
   }
 
   componentDidMount() {
-
     socket.on('username_request', () => {
       if (this.state.username) {
         socket.emit('init', this.state.username);
@@ -72,7 +88,7 @@ class App extends Component {
           {this.state.rooms.map((room) => {
             return (
               <Col key={room['name']} xs="6" sm="3">
-                <MessageBox username={this.state.username} other_user={room['other_user']} history={room['history']} socket={socket} />
+                <MessageBox username={this.state.username} other_user={room['other_user']} history={room['history']} onClose={this.delRoom} socket={socket} />
               </Col>
             )
           })}

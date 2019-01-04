@@ -10,7 +10,7 @@ class MessageBox extends Component {
     return (
       <Container>
         <Row>
-          <MessageNavbar />
+          <MessageNavbar other_user={this.props.other_user} onClose={this.props.onClose}/>
         </Row>
         <MessageBody username={this.props.username} other_user={this.props.other_user} socket={this.props.socket} />
         <Row>
@@ -24,6 +24,7 @@ class MessageBox extends Component {
 MessageBox.propTypes = {
   username: PropTypes.string.isRequired,
   other_user: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
   socket: PropTypes.object.isRequired
 };
 
