@@ -1,6 +1,7 @@
 from flask import Flask, url_for
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
 import json
+import hashlib
 
 
 app = Flask(__name__)
@@ -54,17 +55,7 @@ def login():
     return flask.render_template('login.html', form=form)
 
 
-@socketio.on('message')
-def handle_message(data):
-    try:
-        data = json.loads(data)
-        msg = data['msg']
-        username = data['username']
-        room = data['room']
-    except:
-        print("something is wrong\n\n\n")
-        return False
-    emit('message', (username, msg, room), room=room)
+
 
 @socketio.on('connect')
 def on_connect():
@@ -74,8 +65,33 @@ def on_connect():
 def on_disconnect():
     emit('refresh', broadcast=True)
 
+def sha256_string(string):
+    '''
+    :type string: string
+    :rtype: bytes
+    '''
+    return hashlib.sha256(string.encode('utf-8')).digest()
 
+def getRoom(username, other_user):
+    '''
+    :type username: string
+    :type other_user: string
+    :rtype: bytes
+    '''
+    return b''.join(list(map(lambda x: sha256_string(x), sorted([username, other_user]))))
 
+@socketio.on('message')
+def handle_message(data):
+    try:
+        data = json.loads(data)
+        msg = data['msg']
+        username = data['username']
+        other_user = data['other_user']
+        room = getRoom(username, other_user)
+    except:
+        print("something is wrong\n\n\n")
+        return False
+    emit('message', (msg, username, other_user), room=room)
 
 @socketio.on('join')
 def on_join(data):
@@ -87,12 +103,13 @@ def on_join(data):
     except:
         print("something is wrong\n\n\n")
         return False
-    room = data['name']
+    #room = data['name']
     other_user = data['other_user']
     history = data['history']
+    room = getRoom(username, other_user)
     join_room(room)
-    print(data['username'] + ' joined room ' + room)
-    emit('rooms', username + ' has entered the room.' + room + '\n\n', room=room)
+    #print(data['username'] + ' joined room ' + room)
+    emit('rooms', username.encode('utf-8') + b' has entered the room.' + room + b'\n\n', room=room)
 
 @socketio.on('leave')
 def on_leave(data):

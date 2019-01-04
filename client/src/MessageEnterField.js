@@ -32,7 +32,7 @@ class MessageEnterField extends Component {
     this.props.socket.emit('message', JSON.stringify({
       msg: this.state.value,
       username: this.props.username,
-      room: this.props.room
+      other_user: this.props.other_user,
     }));
     this.setState({value: ''});
   }
@@ -50,7 +50,7 @@ class MessageEnterField extends Component {
 
 MessageEnterField.propTypes = {
   username: PropTypes.string.isRequired,
-  room: PropTypes.string.isRequired,
+  other_user: PropTypes.string.isRequired,
   socket: PropTypes.object.isRequired
 };
 

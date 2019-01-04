@@ -48,11 +48,6 @@ class App extends Component {
 
   componentDidMount() {
 
-    /*socket.emit('join', JSON.stringify({
-      'username': this.state.username,
-      'room': 'room'
-    }));*/
-
     socket.on('username_request', () => {
       if (this.state.username) {
         socket.emit('init', this.state.username);
@@ -77,7 +72,7 @@ class App extends Component {
           {this.state.rooms.map((room) => {
             return (
               <Col key={room['name']} xs="6" sm="3">
-                <MessageBox username={this.state.username} room={room['name']} other_user={room['other_user']} history={room['history']} socket={socket} />
+                <MessageBox username={this.state.username} other_user={room['other_user']} history={room['history']} socket={socket} />
               </Col>
             )
           })}

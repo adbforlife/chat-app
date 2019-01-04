@@ -17,8 +17,9 @@ class MessageBox extends Component {
   }
 
   componentDidMount() {
-    this.props.socket.on('message', (username,msg,room) => {
-      if (room !== this.props.room) return;
+    this.props.socket.on('message', (msg,username,other_user) => {
+      console.log("got a message!")
+      if ((other_user !== this.props.other_user || username !== this.props.username) && (other_user !== this.props.username || username !== this.props.other_user)) return;
       this.setState({
         listItems: [...this.state.listItems, username + ": " + msg]
       });
@@ -41,7 +42,7 @@ class MessageBox extends Component {
           </Col>
         </Row>
         <Row>
-          <MessageEnterField username={this.props.username} room={this.props.room} socket={this.props.socket}/>
+          <MessageEnterField username={this.props.username} other_user={this.props.other_user} socket={this.props.socket}/>
         </Row>
       </Container>
     );
@@ -50,7 +51,7 @@ class MessageBox extends Component {
 
 MessageBox.propTypes = {
   username: PropTypes.string.isRequired,
-  room: PropTypes.string.isRequired,
+  other_user: PropTypes.string.isRequired,
   socket: PropTypes.object.isRequired
 };
 
