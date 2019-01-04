@@ -43,7 +43,6 @@ class App extends Component {
     setTimeout(function () {
       console.log(this.state.rooms);
     }.bind(this), 3000);
-    //console.log(JSON.stringify(room))
     socket.emit('join', JSON.stringify(room))
   }
 

@@ -7,15 +7,18 @@ class NameBox extends Component {
     super(props);
     this.state = {
       username: '',
+      dropdownDisabled: true
     };
 
     this.onUpdate = this.onUpdate.bind(this);
   }
 
   onUpdate(val) {
+    if (!val) return;
     this.props.onUpdate(val);
     this.setState({
-      username: val
+      username: val,
+      dropdownDisabled: false
     });
   }
 
@@ -23,7 +26,7 @@ class NameBox extends Component {
     return (
       <div>
         <NameEnterField onUpdate={this.onUpdate}/>
-        <NameDropdown username={this.state.username} onConverse={this.props.onConverse} socket={this.props.socket}/>
+        <NameDropdown username={this.state.username} dropdownDisabled={this.state.dropdownDisabled} onConverse={this.props.onConverse} socket={this.props.socket}/>
       </div>
     );
   }

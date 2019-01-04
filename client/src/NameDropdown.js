@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 function ListItem(props) {
@@ -66,7 +67,7 @@ class NameDropdown extends Component {
   render() {
     return (
       <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-        <DropdownToggle caret>
+        <DropdownToggle caret disabled={this.props.dropdownDisabled}>
           Start a conversation:
         </DropdownToggle>
         <DropdownMenu right>
@@ -77,6 +78,13 @@ class NameDropdown extends Component {
       </Dropdown>
     );
   }
+}
+
+NameDropdown.propTypes = {
+  username: PropTypes.string.isRequired,
+  dropdownDisabled: PropTypes.bool.isRequired,
+  onConverse: PropTypes.func.isRequired,
+  socket: PropTypes.object.isRequired
 }
 
 export default NameDropdown;

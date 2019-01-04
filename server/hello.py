@@ -56,24 +56,32 @@ def request():
 
 @socketio.on('init')
 def initial_add(data):
-	emit('init', data, broadcast=True)
+    if not data:
+        return
+    emit('init', data, broadcast=True)
 
 @socketio.on('broadcast_add')
 def user_add(data):
-	emit('user_list_add', data, broadcast=True)
+    if not data:
+        return
+    emit('user_list_add', data, broadcast=True)
 
 @socketio.on('broadcast_del')
 def user_del(data):
+    if not data:
+        return
     emit('user_list_del', data, broadcast=True)
 
 
 @socketio.on('join')
 def on_join(data):
-    data = json.loads(data)
-    print(data['username'] + ' joining')
-    username = data['username']
-    if not username:
-    	return False
+    try:
+        data = json.loads(data)
+        print(data['username'] + ' joining')
+        username = data['username']
+        if not username:
+            return False
+    except: pass
     room = data['name']
     other_user = data['other_user']
     history = data['history']
