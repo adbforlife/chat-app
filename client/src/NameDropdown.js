@@ -16,6 +16,7 @@ class NameDropdown extends Component {
     this.add = this.add.bind(this);
     this.toggle = this.toggle.bind(this);
     this.startConvo = this.startConvo.bind(this);
+    this.refreshList = this.refreshList.bind(this);
   }
 
   toggle() {
@@ -33,14 +34,22 @@ class NameDropdown extends Component {
     });
   }
 
-  componentDidMount() {
+  refreshList() {
+    this.setState({
+      listUsers: []
+    })
     this.props.socket.emit('broadcast_request');
 
     this.props.socket.on('init', this.add);
     setTimeout(function () {
       this.props.socket.removeListener('init', this.add);
     }.bind(this), 3000);
+  }
 
+  componentDidMount() {
+    this.refreshList();
+
+    this.props.socket.on('refresh', this.refreshList);
     this.props.socket.on('user_list_add', this.add);
 
     this.props.socket.on('user_list_del', (data) => {
@@ -51,7 +60,7 @@ class NameDropdown extends Component {
   }
 
   startConvo(name) {
-    console.log("starting convo with " + name);
+    this.props.onConverse(name);
   }
 
   render() {

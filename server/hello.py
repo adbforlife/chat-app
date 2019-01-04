@@ -40,6 +40,10 @@ def handle_message(msg):
 def on_connect():
     print('user connected')
 
+@socketio.on('disconnect')
+def on_disconnect():
+    emit('refresh', broadcast=True)
+
 '''@socket.on('activate_user')
 def on_active_user(data):
     user = data.get('username')
@@ -60,7 +64,7 @@ def user_add(data):
 
 @socketio.on('broadcast_del')
 def user_del(data):
-	emit('user_list_del', data, broadcast=True)
+    emit('user_list_del', data, broadcast=True)
 
 
 @socketio.on('join')

@@ -23,7 +23,7 @@ class NameBox extends Component {
     return (
       <div>
         <NameEnterField onUpdate={this.onUpdate}/>
-        <NameDropdown username={this.state.username} socket={this.props.socket}/>
+        <NameDropdown username={this.state.username} onConverse={this.props.onConverse} socket={this.props.socket}/>
       </div>
     );
   }

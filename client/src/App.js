@@ -13,10 +13,9 @@ class App extends Component {
       username: '',
       rooms: []
     }
-    //this.setState = this.setState.bind(this);
   }
 
-  changeUserName = (name) => {
+  changeUsername = (name) => {
     if (this.state.username) {
       socket.emit('broadcast_del', this.state.username);
     }
@@ -24,6 +23,25 @@ class App extends Component {
       username: name
     });
     socket.emit('broadcast_add', name);
+  }
+
+  addRoom = (other_user) => {
+    for (var i = 0; i < this.state.rooms.length; i++) {
+      if (this.state.rooms[i]['other_user'] === other_user)
+        return false;
+    }
+    console.log("conversing with " + other_user);
+    this.setState({
+      rooms: [...this.state.rooms, {
+        name: [this.state.username, other_user].sort().join(''),
+        other_user: other_user,
+        history: []
+      }]
+    });
+    setTimeout(function () {
+      console.log(this.state.rooms);
+    }.bind(this), 3000);
+    //console.log(this.state.rooms);
   }
 
   componentDidMount() {
@@ -42,6 +60,10 @@ class App extends Component {
     })
   }
 
+  componentWillUnmount() {
+    socket.emit('broadcast_del', this.state.username);
+  }
+
   render() {
     let greeting;
     if (this.state.username) {
@@ -52,13 +74,17 @@ class App extends Component {
         <Row>
           <Col>
             {greeting}
-            <NameBox onUpdate={this.changeUserName} socket={socket}/>
+            <NameBox onUpdate={this.changeUsername} onConverse={this.addRoom} socket={socket}/>
           </Col>
         </Row>
         <Row>
-          <Col xs = "6" sm = "3">
-            <MessageBox socket={socket} />
-          </Col>
+          {this.state.rooms.map((room) => {
+            return (
+              <Col key={room['name']} xs="6" sm="3">
+                <MessageBox key={room['name']} other_user={room['other_user']} history={room['history']} socket={socket} />
+              </Col>
+            )
+          })}
         </Row>
       </Container>
     );
