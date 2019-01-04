@@ -104,7 +104,7 @@ def on_join(data):
         history = data['history']
         room = getRoom(username, other_user)
         join_room(room)
-        emit('enter_exit', (username + ' has entered the room.', username, other_user), room=room)
+        emit('enter', (username + ' has entered the room.', username, other_user), room=room)
     except:
         print("something is wrong\n\n\n")
         return False
@@ -120,7 +120,35 @@ def on_leave(data):
         history = data['history']
         room = getRoom(username, other_user)
         leave_room(room)
-        emit('enter_exit', (username + ' has left the room.', username, other_user), room=room)
+        emit('exit', (username + ' has left the room.', username, other_user), room=room)
+    except:
+        print("something is wrong\n\n\n")
+        return False
+
+@socketio.on('request')
+def request_info(data):
+    try:
+        data = json.loads(data)
+        username = data['username']
+        if not username:
+            return False
+        other_user = data['other_user']
+        room = getRoom(username, other_user)
+        emit('request_info', room=room)
+    except:
+        print("something is wrong\n\n\n")
+        return False
+
+@socketio.on('give_user')
+def on_give_user(data):
+    try:
+        data = json.loads(data)
+        username = data['username']
+        if not username:
+            return False
+        other_user = data['other_user']
+        room = getRoom(username, other_user)
+        emit('receive_user', username, room=room)
     except:
         print("something is wrong\n\n\n")
         return False
