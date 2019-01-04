@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import NameEnterField from './NameEnterField';
 import NameDropdown from './NameDropdown';
 
@@ -6,7 +7,6 @@ class NameBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
       dropdownDisabled: true
     };
 
@@ -17,7 +17,6 @@ class NameBox extends Component {
     if (!val) return;
     this.props.onUpdate(val);
     this.setState({
-      username: val,
       dropdownDisabled: false
     });
   }
@@ -26,10 +25,17 @@ class NameBox extends Component {
     return (
       <div>
         <NameEnterField onUpdate={this.onUpdate}/>
-        <NameDropdown username={this.state.username} dropdownDisabled={this.state.dropdownDisabled} onConverse={this.props.onConverse} socket={this.props.socket}/>
+        <NameDropdown username={this.props.username} dropdownDisabled={this.state.dropdownDisabled} onConverse={this.props.onConverse} socket={this.props.socket}/>
       </div>
     );
   }
+}
+
+NameBox.propTypes = {
+  username: PropTypes.string.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  onConverse: PropTypes.func.isRequired,
+  socket: PropTypes.object.isRequired
 }
 
 export default NameBox;

@@ -70,7 +70,7 @@ class App extends Component {
         <Row>
           <Col>
             {greeting}
-            <NameBox onUpdate={this.changeUsername} onConverse={this.addRoom} socket={socket}/>
+            <NameBox username={this.state.username} onUpdate={this.changeUsername} onConverse={this.addRoom} socket={socket}/>
           </Col>
         </Row>
         <Row>

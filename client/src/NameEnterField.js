@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Button, Input } from 'reactstrap';
 
 class NameEnterField extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
       value: '',
     };
 
@@ -30,12 +30,7 @@ class NameEnterField extends Component {
   }
 
   onEnter() {
-    if (!this.state.value) {
-      return;
-    }
-    this.setState({
-      username: this.state.value
-    });
+    if (!this.state.value) return;
     this.props.onUpdate(this.state.value);
     this.setState({value: ''});
   }
@@ -50,5 +45,9 @@ class NameEnterField extends Component {
     );
   }
 }
+
+NameEnterField.propTypes = {
+  onUpdate: PropTypes.func.isRequired
+};
 
 export default NameEnterField;

@@ -85,6 +85,6 @@ NameDropdown.propTypes = {
   dropdownDisabled: PropTypes.bool.isRequired,
   onConverse: PropTypes.func.isRequired,
   socket: PropTypes.object.isRequired
-}
+};
 
 export default NameDropdown;

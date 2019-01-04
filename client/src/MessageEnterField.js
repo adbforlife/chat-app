@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Button, Input } from 'reactstrap';
 
 class MessageEnterField extends Component {
@@ -37,5 +38,9 @@ class MessageEnterField extends Component {
     );
   }
 }
+
+MessageEnterField.propTypes = {
+  socket: PropTypes.object.isRequired
+};
 
 export default MessageEnterField;
