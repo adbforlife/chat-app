@@ -13,15 +13,6 @@ class MessageBox extends Component {
           <MessageNavbar />
         </Row>
         <MessageBody username={this.props.username} other_user={this.props.other_user} socket={this.props.socket} />
-        {/*<Row>
-          <Col>
-            <ul>
-              {this.state.listItems.map((item, index) =>
-                <ListItem key={index} value={item}/>
-              )}
-            </ul>
-          </Col>
-        </Row>*/}
         <Row>
           <MessageEnterField username={this.props.username} other_user={this.props.other_user} socket={this.props.socket}/>
         </Row>

@@ -10,17 +10,29 @@ class MessageBody extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listItems: []
+      history: []
     };
+    
+    this.updateHistory = this.updateHistory.bind(this);
+  }
+
+  updateHistory(msg) {
+    this.setState({
+      history: [...this.state.history, msg]
+    });
   }
 
   componentDidMount() {
     this.props.socket.on('message', (msg,username,other_user) => {
-      console.log("got a message!")
+      console.log("got a message!");
       if ((other_user !== this.props.other_user || username !== this.props.username) && (other_user !== this.props.username || username !== this.props.other_user)) return;
-      this.setState({
-        listItems: [...this.state.listItems, username + ": " + msg]
-      });
+      this.updateHistory(username + ": " + msg);
+    });
+
+    this.props.socket.on('enter_exit', (msg,username,other_user) => {
+      console.log("got a message!");
+      if ((other_user !== this.props.other_user || username !== this.props.username) && (other_user !== this.props.username || username !== this.props.other_user)) return;
+      this.updateHistory(msg);
     });
   }
 
@@ -29,7 +41,7 @@ class MessageBody extends Component {
       <Row>
         <Col>
           <ul>
-            {this.state.listItems.map((item, index) =>
+            {this.state.history.map((item, index) =>
               <ListItem key={index} value={item}/>
             )}
           </ul>
