@@ -33,8 +33,12 @@ class NameEnterField extends Component {
   }
 
   onEnter() {
-    if (!this.state.value) return;
-    this.props.onUpdate(this.state.value);
+    let val = this.state.value.trim();
+    if (!val) {
+      this.setState({value: ''})
+      return;
+    }
+    this.props.onUpdate(val);
     this.setState({value: ''});
   }
 
