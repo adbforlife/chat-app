@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Input } from 'reactstrap';
+import { Button, Input, InputGroup, InputGroupAddon } from 'reactstrap';
 
 let maxLength = 20;
 
@@ -60,10 +60,10 @@ class NameEnterField extends Component {
 
   render() {
     return (
-      <div>
+      <InputGroup>
         <NameInput username={this.props.username} value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
-        <NameEnterButton username={this.props.username} onClick={this.handleEnter} />
-      </div>
+        <InputGroupAddon addonType="append"><NameEnterButton username={this.props.username} onClick={this.handleEnter} /></InputGroupAddon>
+      </InputGroup>
     );
   }
 }

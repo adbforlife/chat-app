@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Input } from 'reactstrap';
+import { Button, Input, InputGroup, InputGroupAddon } from 'reactstrap';
 
 class MessageEnterField extends Component {
   constructor(props) {
@@ -39,10 +39,10 @@ class MessageEnterField extends Component {
 
   render() {
     return (
-      <div>
+      <InputGroup>
         <Input placeholder="Type a message..." type="text" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
-        <Button onClick={this.handleEnter}>Enter</Button>
-      </div>
+        <InputGroupAddon addonType="append"><Button onClick={this.handleEnter}>Enter</Button></InputGroupAddon>
+      </InputGroup>
     );
   }
 }

@@ -5,8 +5,6 @@ import MessageBox from './MessageBox';
 import NameBox from './NameBox';
 import { Container, Row, Col } from 'reactstrap';
 import { Responsive, WidthProvider } from 'react-grid-layout';
-import './styles-grid.css';
-import './styles-resizable.css';
 const ResponsiveGridLayout = WidthProvider(Responsive);
 const socket = io('http://localhost:5001');
 
@@ -154,11 +152,11 @@ class App extends Component {
 
   getLayout(num_rooms, num_cols) {
     var layout = [
-    {i: 'NameBox', x: 0, y: 0, w: 12, h: 2, static: true}
+    {i: 'NameBox', x: 0, y: 0, w: 12, h: 1, static: true}
     ]
     for (var i = 0; i < num_rooms; i++) {
       layout.push(
-        {i: 'Room' + i.toString(), x: (i*2)%num_cols, y: 2+(Math.floor(2*i/num_cols)), w: 2, h: 2, static: true}
+        {i: 'Room' + i.toString(), x: (i*2)%num_cols, y: 1+(Math.floor(2*i/num_cols)), w: 2, h: 2, static: true}
       );
     }
     return layout;
