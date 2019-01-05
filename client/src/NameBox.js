@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import NameEnterField from './NameEnterField';
 import NameDropdown from './NameDropdown';
-import { Container, Row, Col, Badge } from 'reactstrap';
+import { FormText, FormGroup, FormFeedback, Container, Row, Col, Badge } from 'reactstrap';
 
 class NameBox extends Component {
   constructor(props) {
@@ -10,12 +10,17 @@ class NameBox extends Component {
     this.state = {
       dropdownDisabled: true
     };
-
+    this.dropdown = React.createRef();
+    this.enterField = React.createRef();
     this.onUpdate = this.onUpdate.bind(this);
   }
 
   onUpdate(val) {
     if (!val) return;
+    if (this.dropdown.current.isInList(val)) {
+      this.enterField.current.changeValidity(true);
+      return;
+    }
     this.props.onUpdate(val);
     this.setState({
       dropdownDisabled: false
@@ -33,17 +38,15 @@ class NameBox extends Component {
         <NameEnterField username={this.props.username} onUpdate={this.onUpdate}/>
         <NameDropdown username={this.props.username} dropdownDisabled={this.state.dropdownDisabled} onConverse={this.props.onConverse} socket={this.props.socket}/>
       </div>*/
-      
-        <Row>
-          <Col lg="auto" md="auto" sm="auto">
-            {greeting}
-            <NameEnterField username={this.props.username} onUpdate={this.onUpdate}/>
-          </Col>
-          <Col lg="auto" md="auto" sm="auto">
-            <NameDropdown username={this.props.username} dropdownDisabled={this.state.dropdownDisabled} onConverse={this.props.onConverse} socket={this.props.socket}/>
-          </Col>
-        </Row>
-      
+      <Row>
+        <Col lg="auto" md="auto" sm="auto">
+          {greeting}
+          <NameEnterField ref={this.enterField} username={this.props.username} onUpdate={this.onUpdate}/>
+        </Col>
+        <Col lg="auto" md="auto" sm="auto">
+          <NameDropdown ref={this.dropdown} username={this.props.username} dropdownDisabled={this.state.dropdownDisabled} onConverse={this.props.onConverse} socket={this.props.socket}/>
+        </Col>
+      </Row>
     );
   }
 }

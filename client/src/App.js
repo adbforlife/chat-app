@@ -173,24 +173,6 @@ class App extends Component {
     }
     console.log(layouts)
     return (
-      /*<ResponsiveGridLayout className="layout" layouts={layouts} 
-        breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
-        cols={{lg: 12, md: 8, sm: 6, xs: 4, xxs: 2}} rowHeight={100}>
-        <div key="NameBox">
-          <NameBox username={this.state.username} onUpdate={this.changeUsername} onConverse={this.addRoom} socket={socket}/>
-        </div>
-        {this.state.currRooms.map((room,index) => {
-          return (
-            <div key={'Room' + index}>
-              <MessageBox username={this.state.username} other_user={room['other_user']} history={room['history']} onAddHistory={function(msg) {
-                room['history'].push(msg);
-                console.log(room['history']);
-                console.log("adding to history " + msg);
-              }} onClose={this.delRoom} socket={socket} />
-            </div>
-          );
-        })}
-      </ResponsiveGridLayout>*/
       <Container>
           <NameBox username={this.state.username} onUpdate={this.changeUsername} onConverse={this.addRoom} socket={socket}/>
           <ResponsiveGridLayout className="layout" layouts={layouts} 
@@ -209,18 +191,6 @@ class App extends Component {
               );
             })}
           </ResponsiveGridLayout>
-          {/*this.state.currRooms.map((room) => {
-            return (
-              <Col key={room['name']} xs="6" sm="3">
-                <MessageBox username={this.state.username} other_user={room['other_user']} history={room['history']} onAddHistory={function(msg) {
-                  room['history'].push(msg);
-                  console.log(room['history']);
-                  console.log("adding to history " + msg);
-                }} onClose={this.delRoom} socket={socket} />
-              </Col>
-            )
-          })*/}
-        
       </Container>
     );
   }

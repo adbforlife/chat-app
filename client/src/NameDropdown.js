@@ -20,6 +20,10 @@ class NameDropdown extends Component {
     this.refreshList = this.refreshList.bind(this);
   }
 
+  isInList(name) {
+    return this.state.listUsers.includes(name);
+  }
+
   toggle() {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen
