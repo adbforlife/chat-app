@@ -13,11 +13,11 @@ socketio = SocketIO(app)
 def request():
     emit('username_request', broadcast=True)
 
-@socketio.on('init')
+'''@socketio.on('init')
 def initial_add(data):
     if not data:
         return
-    emit('init', data, broadcast=True)
+    emit('init', data, broadcast=True)'''
 
 @socketio.on('broadcast_add')
 def user_add(data):

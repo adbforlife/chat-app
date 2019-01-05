@@ -38,13 +38,9 @@ class NameDropdown extends Component {
   refreshList() {
     this.setState({
       listUsers: []
+    }, () => {
+      this.props.socket.emit('broadcast_request');
     })
-    this.props.socket.emit('broadcast_request');
-
-    this.props.socket.on('init', this.add);
-    setTimeout(function () {
-      this.props.socket.removeListener('init', this.add);
-    }.bind(this), 3000);
   }
 
   componentDidMount() {

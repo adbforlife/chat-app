@@ -19,6 +19,12 @@ class App extends Component {
     this.hydrateStateWithLocalStorage = this.hydrateStateWithLocalStorage.bind(this);
     this.saveRoomsToLocalStorage = this.saveRoomsToLocalStorage.bind(this);
     this.getRoomName = this.getRoomName.bind(this);
+    this.finalCleanup = this.finalCleanup.bind(this);
+  }
+
+  finalCleanup() {
+    socket.emit('broadcast_del', this.state.username);
+    window.removeEventListener('beforeunload', this.finalCleanup);
   }
 
   storeRoom(username,other_user,room_name,history) {
@@ -133,13 +139,13 @@ class App extends Component {
     this.hydrateStateWithLocalStorage();
     socket.on('username_request', () => {
       if (this.state.username) {
-        socket.emit('init', this.state.username);
+        socket.emit('broadcast_add', this.state.username);
       }
     });
     socket.on('hydrate', () => {
       this.hydrateStateWithLocalStorage();
     })
-    console.log("username is " + this.state.username)
+    window.addEventListener('beforeunload', this.finalCleanup);
   }
 
   render() {
