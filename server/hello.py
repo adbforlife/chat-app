@@ -151,6 +151,9 @@ def on_give_user(data):
         print("something is wrong\n\n\n")
         return False
 
+@socketio.on('hydrate')
+def on_hydrate():
+    emit('hydrate', broadcast=True)
 
 if __name__ == '__main__':
 	tempUsers = []

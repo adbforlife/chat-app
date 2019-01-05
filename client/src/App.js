@@ -16,6 +16,8 @@ class App extends Component {
     }
 
     this.storeRoom = this.storeRoom.bind(this);
+    this.hydrateStateWithLocalStorage = this.hydrateStateWithLocalStorage.bind(this);
+    this.saveRoomsToLocalStorage = this.saveRoomsToLocalStorage.bind(this);
     this.getRoomName = this.getRoomName.bind(this);
   }
 
@@ -23,12 +25,13 @@ class App extends Component {
     for (var i = 0; i < this.state.storedRooms.length; i++) {
       if (this.state.storedRooms[i]['room_name'] === room_name) {
         let room = this.state.storedRooms[i];
-        if (username !== room['username'] || other_user !== room['other_user']) {
+        /*if ((username !== room['username']) || (other_user !== room['other_user'])) {
           console.log("something very very wrong");
           return;
-        }
+        }*/
         room['history'] = history;
         console.log(this.state.storedRooms);
+        this.saveRoomsToLocalStorage();
         return;
       }
     }
@@ -39,10 +42,28 @@ class App extends Component {
         room_name: room_name,
         history: history
       }]
-    })
+    }, () => {
+      this.saveRoomsToLocalStorage();
+      socket.emit('hydrate');
+    });
+    //this.saveRoomsToLocalStorage();
     setTimeout(function() {
       console.log(this.state.storedRooms);
     }.bind(this), 1000);
+  }
+
+  hydrateStateWithLocalStorage() {
+    let key = 'storedRooms'
+    if (localStorage.hasOwnProperty(key)) {
+      let value = localStorage.getItem(key);
+      try {
+        value = JSON.parse(value);
+        this.setState({ storedRooms: value });
+      } catch (e) {
+        // handle empty string
+        this.setState({ storedRooms: value });
+      }
+    }
   }
 
   saveRoomsToLocalStorage() {
@@ -51,16 +72,18 @@ class App extends Component {
 
   changeUsername = (name) => {
     if (this.state.username) {
-      socket.emit('broadcast_del', this.state.username);
+      return;
+      //socket.emit('broadcast_del', this.state.username);
     }
     this.setState({
       username: name
+    }, () => {
+      socket.emit('broadcast_add', name);
     });
-    socket.emit('broadcast_add', name);
   }
 
   getRoomName(username, other_user) {
-    return [this.state.username, other_user].sort().join('');
+    return [this.state.username, other_user].join('');
   }
 
   addRoom = (other_user) => {
@@ -71,7 +94,7 @@ class App extends Component {
     let room_name = this.getRoomName(this.state.username, other_user);
     var history = []
     for (var j = 0; j < this.state.storedRooms.length; j++) {
-      if (this.state.storedRooms[j]['room_name'] === room_name) {
+      if (this.state.storedRooms[j]['room_name'] === room_name && this.state.storedRooms[j]['username'] === this.state.username) {
         history = this.state.storedRooms[j]['history'];
         break;
       }
@@ -111,11 +134,16 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.hydrateStateWithLocalStorage();
     socket.on('username_request', () => {
       if (this.state.username) {
         socket.emit('init', this.state.username);
       }
+    });
+    socket.on('hydrate', () => {
+      this.hydrateStateWithLocalStorage();
     })
+    console.log("username is " + this.state.username)
   }
 
   render() {
