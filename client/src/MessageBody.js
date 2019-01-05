@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col } from 'reactstrap'; 
+import { ListGroup, ListGroupItem, Row, Col } from 'reactstrap'; 
 
 function ListItem(props) {
-  return <li>{props.value}</li>;
+  return <li className="message-other">{props.value}</li>;
 }
 
 class MessageBody extends Component {
@@ -67,12 +67,25 @@ class MessageBody extends Component {
     }
   }
 
+  renderMessage = (msg) => {
+
+  }
+
+  scrollToBottom = () => {
+    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+  }
+
   componentDidMount() {
     this.props.socket.on('message', this.onMessage);
     this.props.socket.on('enter', this.onEnter);
     this.props.socket.on('exit', this.onExit);
     this.props.socket.on('request_info', this.onRequestInfo);
     this.props.socket.on('receive_user', this.onReceiveUser);
+    this.scrollToBottom();
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
   }
 
   componentWillUnmount() {
@@ -85,15 +98,25 @@ class MessageBody extends Component {
 
   render() {
     return (
-      <Row>
-        <Col>
-          <ul>
-            {this.state.messages.map((item, index) =>
-              <ListItem key={index} value={item}/>
-            )}
-          </ul>
-        </Col>
-      </Row>
+      <div className="message-body">
+        {/*<Row>
+          <ListGroup>
+            {this.state.messages.map((item, index) => {
+              return <ListGroupItem key={index}>{item}</ListGroupItem>
+            })}
+          </ListGroup>
+          
+          
+        </Row>*/}
+        <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+          {this.state.messages.map((item, index) =>
+            <ListItem key={index} value={item}/>
+          )}
+        </ul>
+        <div style={{ float:"left", clear: "both" }}
+          ref={(el) => { this.messagesEnd = el; }}>
+        </div>
+      </div>
     );
   }
 }

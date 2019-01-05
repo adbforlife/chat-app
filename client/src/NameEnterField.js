@@ -6,7 +6,7 @@ let maxLength = 20;
 
 function NameInput(props) {
   if (!props.username) {
-    return <Input placeholder="Type your name... (e.g. Alice)" type="text" value={props.value} onChange={props.onChange} onKeyPress={props.onKeyPress} />;
+    return <Input placeholder="Type your name..." type="text" value={props.value} onChange={props.onChange} onKeyPress={props.onKeyPress} />;
   } else {
     return null;
   }

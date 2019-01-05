@@ -44,8 +44,6 @@ class NameDropdown extends Component {
   }
 
   componentDidMount() {
-    this.refreshList();
-
     this.props.socket.on('refresh', this.refreshList);
     this.props.socket.on('user_list_add', this.add);
 
@@ -54,6 +52,7 @@ class NameDropdown extends Component {
         return username !== data;
       })});
     });
+    this.refreshList();
   }
 
   startConvo(name) {

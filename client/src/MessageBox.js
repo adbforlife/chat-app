@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import MessageNavbar from './MessageNavbar';
 import MessageBody from './MessageBody';
 import MessageEnterField from './MessageEnterField';
-import { Container, Row } from 'reactstrap'; 
+import { Card, CardHeader, CardBody, CardFooter, Container, Row } from 'reactstrap'; 
 
 class MessageBox extends Component {
   constructor(props) {
@@ -28,15 +28,28 @@ class MessageBox extends Component {
 
   render() {
     return (
-      <Container>
+      <Card>
+        <CardHeader>
+          <MessageNavbar other_user={this.props.other_user} onClose={this.props.onClose}/>
+        </CardHeader>
+        <CardBody>
+          <MessageBody username={this.props.username} other_user={this.props.other_user} history={this.props.history} isAlone={this.state.isAlone} changeIsAlone={this.changeIsAlone} onAddHistory={this.props.onAddHistory} socket={this.props.socket} />
+        </CardBody>
+        <CardFooter>
+          <MessageEnterField username={this.props.username} other_user={this.props.other_user} socket={this.props.socket}/>
+        </CardFooter>
+      </Card>
+      /*<Container>
         <Row>
           <MessageNavbar other_user={this.props.other_user} onClose={this.props.onClose}/>
         </Row>
-        <MessageBody username={this.props.username} other_user={this.props.other_user} history={this.props.history} isAlone={this.state.isAlone} changeIsAlone={this.changeIsAlone} onAddHistory={this.props.onAddHistory} socket={this.props.socket} />
+        <Row>
+          <MessageBody username={this.props.username} other_user={this.props.other_user} history={this.props.history} isAlone={this.state.isAlone} changeIsAlone={this.changeIsAlone} onAddHistory={this.props.onAddHistory} socket={this.props.socket} />
+        </Row>
         <Row>
           <MessageEnterField username={this.props.username} other_user={this.props.other_user} socket={this.props.socket}/>
         </Row>
-      </Container>
+      </Container>*/
     );
   }
 }

@@ -85,6 +85,7 @@ def handle_message(data):
     except:
         print("something is wrong\n\n\n")
         return False
+    print(msg, username, other_user)
     emit('message', (msg, username, other_user), room=room)
 
 @socketio.on('join')
