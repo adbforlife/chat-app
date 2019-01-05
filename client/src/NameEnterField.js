@@ -4,6 +4,22 @@ import { Button, Input } from 'reactstrap';
 
 let maxLength = 16;
 
+function NameInput(props) {
+  if (!props.username) {
+    return <Input placeholder="Type your name... (e.g. Alice)" type="text" value={props.value} onChange={props.onChange} onKeyPress={props.onKeyPress} />;
+  } else {
+    return null;
+  }
+}
+
+function NameEnterButton(props) {
+  if (!props.username) {
+    return <Button onClick={props.onClick}>Enter</Button>
+  } else {
+    return null;
+  }
+}
+
 class NameEnterField extends Component {
   constructor(props) {
     super(props);
@@ -45,15 +61,15 @@ class NameEnterField extends Component {
   render() {
     return (
       <div>
-        <label>Your name: </label>
-        <Input type="text" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
-        <Button onClick={this.handleEnter}>Enter</Button>
+        <NameInput username={this.props.username} value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
+        <NameEnterButton username={this.props.username} onClick={this.handleEnter} />
       </div>
     );
   }
 }
 
 NameEnterField.propTypes = {
+  username: PropTypes.string.isRequired,
   onUpdate: PropTypes.func.isRequired
 };
 

@@ -24,7 +24,7 @@ class NameBox extends Component {
   render() {
     return (
       <div>
-        <NameEnterField onUpdate={this.onUpdate}/>
+        <NameEnterField username={this.props.username} onUpdate={this.onUpdate}/>
         <NameDropdown username={this.props.username} dropdownDisabled={this.state.dropdownDisabled} onConverse={this.props.onConverse} socket={this.props.socket}/>
       </div>
     );

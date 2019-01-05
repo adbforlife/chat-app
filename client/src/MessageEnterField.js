@@ -40,7 +40,6 @@ class MessageEnterField extends Component {
   render() {
     return (
       <div>
-        <label>Message: </label>
         <Input placeholder="Type a message..." type="text" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
         <Button onClick={this.handleEnter}>Enter</Button>
       </div>

@@ -25,10 +25,6 @@ class App extends Component {
     for (var i = 0; i < this.state.storedRooms.length; i++) {
       if (this.state.storedRooms[i]['room_name'] === room_name) {
         let room = this.state.storedRooms[i];
-        /*if ((username !== room['username']) || (other_user !== room['other_user'])) {
-          console.log("something very very wrong");
-          return;
-        }*/
         room['history'] = history;
         console.log(this.state.storedRooms);
         this.saveRoomsToLocalStorage();
