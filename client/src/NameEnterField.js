@@ -73,7 +73,6 @@ class NameEnterField extends Component {
         <InputGroup>
           <NameInput username={this.props.username} invalid={this.state.invalid} value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
           <InputGroupAddon addonType="append"><NameEnterButton username={this.props.username} onClick={this.handleEnter} /></InputGroupAddon>
-          {/*<FormFeedback>Oh noes! that name is already taken</FormFeedback>*/}
         </InputGroup>
         {
           this.state.invalid ? <FormText>That name is already taken</FormText> : null

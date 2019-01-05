@@ -138,6 +138,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    document.body.style = 'background: #f0f0f0;';
     this.hydrateStateWithLocalStorage();
     socket.on('username_request', () => {
       if (this.state.username) {
@@ -174,23 +175,27 @@ class App extends Component {
     console.log(layouts)
     return (
       <Container>
-          <NameBox username={this.state.username} onUpdate={this.changeUsername} onConverse={this.addRoom} socket={socket}/>
-          <ResponsiveGridLayout className="layout" layouts={layouts} 
-            breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
-            cols={{lg: 12, md: 8, sm: 6, xs: 4, xxs: 2}} rowHeight={200}>
-            {this.state.currRooms.map((room,index) => {
-              console.log(layouts)
-              return (
-                <div key={'Room' + index}>
-                  <MessageBox username={this.state.username} other_user={room['other_user']} history={room['history']} onAddHistory={function(msg) {
-                    room['history'].push(msg);
-                    console.log(room['history']);
-                    console.log("adding to history " + msg);
-                  }} onClose={this.delRoom} socket={socket} />
-                </div>
-              );
-            })}
-          </ResponsiveGridLayout>
+        <Row style={{height: 35}}></Row>
+        <NameBox username={this.state.username} onUpdate={this.changeUsername} onConverse={this.addRoom} socket={socket}/>
+        <ResponsiveGridLayout className="layout" layouts={layouts} 
+          breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
+          cols={{lg: 12, md: 8, sm: 6, xs: 4, xxs: 2}} rowHeight={200}>
+          {this.state.currRooms.map((room,index) => {
+            return (
+              <div key={'Room' + index}>
+                <MessageBox username={this.state.username} other_user={room['other_user']} history={room['history']} onAddHistory={function(msg, type, username) {
+                  room['history'].push({
+                    message: msg,
+                    type: type,
+                    username: username
+                  });
+                  console.log(room['history']);
+                  console.log("adding to history " + msg);
+                }} onClose={this.delRoom} socket={socket} />
+              </div>
+            );
+          })}
+        </ResponsiveGridLayout>
       </Container>
     );
   }

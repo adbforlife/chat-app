@@ -14,12 +14,6 @@ class MessageBox extends Component {
     this.changeIsAlone = this.changeIsAlone.bind(this);
   }
 
-  /*componentDidMount() {
-    setInterval(function() {
-      console.log(this.state.isAlone);
-    }.bind(this), 1000);
-  }*/
-
   changeIsAlone(val) {
     this.setState({
       isAlone: val
@@ -39,17 +33,6 @@ class MessageBox extends Component {
           <MessageEnterField username={this.props.username} other_user={this.props.other_user} socket={this.props.socket}/>
         </CardFooter>
       </Card>
-      /*<Container>
-        <Row>
-          <MessageNavbar other_user={this.props.other_user} onClose={this.props.onClose}/>
-        </Row>
-        <Row>
-          <MessageBody username={this.props.username} other_user={this.props.other_user} history={this.props.history} isAlone={this.state.isAlone} changeIsAlone={this.changeIsAlone} onAddHistory={this.props.onAddHistory} socket={this.props.socket} />
-        </Row>
-        <Row>
-          <MessageEnterField username={this.props.username} other_user={this.props.other_user} socket={this.props.socket}/>
-        </Row>
-      </Container>*/
     );
   }
 }

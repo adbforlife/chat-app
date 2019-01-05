@@ -16,16 +16,52 @@ body {
   overflow-wrap: break-word;
 }
 
-.message-other {
+.message-others {
   display: flex;
   margin-top: 5px;
 }
 
-.message-user {
+.message-self {
   display: flex;
   margin-top: 5px;
   flex-direction: row-reverse;
   text-align: right;
+}
+
+.message-enter-exit {
+  text-align: center;
+  font-size: 13px;
+  padding-bottom: 2px;
+  color: gray;
+}
+
+.message-content {
+  display: inline-block;
+}
+
+.message-content > .message-username {
+  display: block;
+  color: gray;
+  font-size: 13px;
+  padding-bottom: 2px;
+}
+
+.message-content > .message-text {
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  max-width: 170px;
+  margin: 0;
+  border-radius: 10px;
+  background-color: #397be2;
+  color: white;
+  display: inline-block;
+}
+
+.message-others > .message-content .message-text {
+  background-color: #f0f0f0;
+  color: #404040;
 }
 
 code {

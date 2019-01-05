@@ -5,7 +5,10 @@ import { Button, Input, InputGroup, InputGroupAddon } from 'reactstrap';
 class MessageEnterField extends Component {
   constructor(props) {
     super(props);
-    this.state = {value: ''};
+    this.state = {
+      value: '',
+      disabled: true
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -14,6 +17,11 @@ class MessageEnterField extends Component {
   }
 
   handleChange(event) {
+    if (event.target.value) {
+      this.setState({disabled: false})
+    } else {
+      this.setState({disabled: true})
+    }
     this.setState({value: event.target.value});
   }
 
@@ -35,13 +43,14 @@ class MessageEnterField extends Component {
       other_user: this.props.other_user,
     }));
     this.setState({value: ''});
+    this.setState({disabled: true});
   }
 
   render() {
     return (
       <InputGroup>
         <Input placeholder="Type a message..." type="text" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
-        <InputGroupAddon addonType="append"><Button onClick={this.handleEnter}>Enter</Button></InputGroupAddon>
+        <InputGroupAddon addonType="append"><Button disabled={this.state.disabled} onClick={this.handleEnter}>Send</Button></InputGroupAddon>
       </InputGroup>
     );
   }

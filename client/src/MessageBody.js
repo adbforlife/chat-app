@@ -3,7 +3,24 @@ import PropTypes from 'prop-types';
 import { ListGroup, ListGroupItem, Row, Col } from 'reactstrap'; 
 
 function ListItem(props) {
-  return <li className="message-other">{props.value}</li>;
+  if (props.type === 'enter_exit') {
+    return <li className={'message-enter-exit'}>{props.value}</li>;
+  } else {
+    return (
+      <li className={'message-' + props.type}>
+        {/*<span
+          className="avatar"
+          style={{backgroundColor: member.clientData.color}}
+        />*/}
+        <div className="message-content">
+          <div className="message-username">
+            {props.username}
+          </div>
+          <div className='message-text'>{props.value}</div>
+        </div>
+      </li>
+    )
+  }
 }
 
 class MessageBody extends Component {
@@ -21,26 +38,34 @@ class MessageBody extends Component {
     return (other_user === this.props.other_user && username === this.props.username) || (other_user === this.props.username && username === this.props.other_user)
   }
 
-  updateMessages(msg, username, other_user) {
+  updateMessages(msg, username, other_user, type) {
     console.log("got a good message!" + msg + username + other_user);
     if (!this.checkMessageOrigin(username, other_user)) return;
+    if (type === 'enter_exit') {
+      username = '';
+    }
     this.setState({
-      messages: [...this.state.messages, msg]
+      messages: [...this.state.messages, {
+        message: msg,
+        type: type,
+        username: username
+      }]
     });
   }
 
   onMessage = (msg,username,other_user) => {
-    let string = username + ": " + msg;
-    this.updateMessages(string, username, other_user);
+    //let string = username + ": " + msg;
+    let type = username===this.props.username ? 'self' : 'others'
+    this.updateMessages(msg, username, other_user, type);
     if (!this.props.isAlone) {
       if (!this.checkMessageOrigin(username, other_user)) return;
       console.log("im not alone");
-      this.props.onAddHistory(string);
+      this.props.onAddHistory(msg, type, username);
     }
   }
 
   onEnter = (msg,username,other_user) => {
-    this.updateMessages(msg, username, other_user);
+    this.updateMessages(msg, username, other_user, 'enter_exit');
     this.props.socket.emit('request', JSON.stringify({
       username: this.props.username,
       other_user: this.props.other_user
@@ -48,7 +73,7 @@ class MessageBody extends Component {
   }
 
   onExit = (msg,username,other_user) => {
-    this.updateMessages(msg, username, other_user);
+    this.updateMessages(msg, username, other_user, 'enter_exit');
     if (username !== this.props.username) {
       this.props.changeIsAlone(true);
     }
@@ -82,6 +107,7 @@ class MessageBody extends Component {
     this.props.socket.on('request_info', this.onRequestInfo);
     this.props.socket.on('receive_user', this.onReceiveUser);
     this.scrollToBottom();
+    console.log(this.state.messages);
   }
 
   componentDidUpdate() {
@@ -110,7 +136,7 @@ class MessageBody extends Component {
         </Row>*/}
         <ul style={{ listStyle: "none", paddingLeft: 0 }}>
           {this.state.messages.map((item, index) =>
-            <ListItem key={index} value={item}/>
+            <ListItem key={index} value={item['message']} type={item['type']} username={item['username']}/>
           )}
         </ul>
         <div style={{ float:"left", clear: "both" }}
