@@ -10,29 +10,20 @@ class MessageBody extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages: [],
-      history: []
+      messages: this.props.history
     };
 
+    this.checkMessageOrigin = this.checkMessageOrigin.bind(this);
     this.updateMessages = this.updateMessages.bind(this);
-    this.finalCleanup = this.finalCleanup.bind(this);
   }
 
-  finalCleanup() {
-    this.props.socket.removeAllListeners('message');
-    this.props.socket.removeAllListeners('enter');
-    this.props.socket.removeAllListeners('exit');
-    this.props.socket.removeAllListeners('request_info');
-    this.props.socket.removeAllListeners('receive_user');
-    this.props.socket.emit('leave', JSON.stringify({
-      username: this.props.username,
-      other_user: this.props.other_user
-    }))
+  checkMessageOrigin(username, other_user) {
+    return (other_user === this.props.other_user && username === this.props.username) || (other_user === this.props.username && username === this.props.other_user)
   }
 
   updateMessages(msg, username, other_user) {
     console.log("got a good message!" + msg + username + other_user);
-    if ((other_user !== this.props.other_user || username !== this.props.username) && (other_user !== this.props.username || username !== this.props.other_user)) return;
+    if (!this.checkMessageOrigin(username, other_user)) return;
     this.setState({
       messages: [...this.state.messages, msg]
     });
@@ -43,10 +34,9 @@ class MessageBody extends Component {
       let string = username + ": " + msg;
       this.updateMessages(string, username, other_user);
       if (!this.props.isAlone) {
+        if (!this.checkMessageOrigin(username, other_user)) return;
         console.log("im not alone");
-        this.setState({
-          history: [...this.state.history, string]
-        });
+        this.props.onAddHistory(string);
       }
     });
 
@@ -66,7 +56,6 @@ class MessageBody extends Component {
     });
 
     this.props.socket.on('request_info', () => {
-      console.log("server is requesting");
       this.props.socket.emit('give_user', JSON.stringify({
         username: this.props.username,
         other_user: this.props.other_user
@@ -78,13 +67,14 @@ class MessageBody extends Component {
         this.props.changeIsAlone(false);
       }
     });
-
-    window.addEventListener('beforeunload', this.finalCleanup);
   }
 
   componentWillUnmount() {
-    this.finalCleanup();
-    window.removeEventListener('beforeunload', this.finalCleanup);
+    this.props.socket.removeAllListeners('message');
+    this.props.socket.removeAllListeners('enter');
+    this.props.socket.removeAllListeners('exit');
+    this.props.socket.removeAllListeners('request_info');
+    this.props.socket.removeAllListeners('receive_user');
   }
 
   render() {
@@ -105,6 +95,7 @@ class MessageBody extends Component {
 MessageBody.propTypes = {
   username: PropTypes.string.isRequired,
   other_user: PropTypes.string.isRequired,
+  history: PropTypes.array.isRequired,
   changeIsAlone: PropTypes.func.isRequired,
   socket: PropTypes.object.isRequired
 };

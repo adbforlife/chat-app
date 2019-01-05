@@ -11,10 +11,42 @@ class App extends Component {
     super(props);
     this.state = {
       username: '',
-      rooms: []
+      currRooms: [],
+      storedRooms: []
     }
 
+    this.storeRoom = this.storeRoom.bind(this);
     this.getRoomName = this.getRoomName.bind(this);
+  }
+
+  storeRoom(username,other_user,room_name,history) {
+    for (var i = 0; i < this.state.storedRooms.length; i++) {
+      if (this.state.storedRooms[i]['room_name'] === room_name) {
+        let room = this.state.storedRooms[i];
+        if (username !== room['username'] || other_user !== room['other_user']) {
+          console.log("something very very wrong");
+          return;
+        }
+        room['history'] = history;
+        console.log(this.state.storedRooms);
+        return;
+      }
+    }
+    this.setState({
+      storedRooms: [...this.state.storedRooms, {
+        username: username,
+        other_user: other_user,
+        room_name: room_name,
+        history: history
+      }]
+    })
+    setTimeout(function() {
+      console.log(this.state.storedRooms);
+    }.bind(this), 1000);
+  }
+
+  saveRoomsToLocalStorage() {
+    localStorage.setItem('storedRooms', JSON.stringify(this.state.storedRooms));
   }
 
   changeUsername = (name) => {
@@ -32,35 +64,50 @@ class App extends Component {
   }
 
   addRoom = (other_user) => {
-    for (var i = 0; i < this.state.rooms.length; i++) {
-      if (this.state.rooms[i]['other_user'] === other_user)
+    for (var i = 0; i < this.state.currRooms.length; i++) {
+      if (this.state.currRooms[i]['other_user'] === other_user)
         return false;
     }
-    console.log("conversing with " + other_user);
-    let room = {
-      username: this.state.username,
-      name: this.getRoomName(this.state.username, other_user),
-      other_user: other_user,
-      history: []
+    let room_name = this.getRoomName(this.state.username, other_user);
+    var history = []
+    for (var j = 0; j < this.state.storedRooms.length; j++) {
+      if (this.state.storedRooms[j]['room_name'] === room_name) {
+        history = this.state.storedRooms[j]['history'];
+        break;
+      }
     }
     this.setState({
-      rooms: [...this.state.rooms, room]
+      currRooms: [...this.state.currRooms, {
+        username: this.state.username,
+        name: room_name,
+        other_user: other_user,
+        history: history
+      }]
     });
-    socket.emit('join', JSON.stringify(room));
+    socket.emit('join', JSON.stringify({
+      username: this.state.username,
+      other_user: other_user
+    }));
   }
 
   delRoom = (other_user) => {
     let room_name = this.getRoomName(this.state.username, other_user);
+    let history;
     console.log("closing" + room_name)
-    this.setState({rooms: this.state.rooms.filter(function(room) { 
-        return room['name'] !== room_name;
+    this.setState({currRooms: this.state.currRooms.filter(function(room) { 
+        let same_name = (room['name'] === room_name);
+        if (same_name) {
+          history = room['history'];
+        }
+        return !same_name;
     })});
+    console.log(history);
     let room = {
       username: this.state.username,
       other_user: other_user,
-      history: []
     }
     socket.emit('leave', JSON.stringify(room));
+    this.storeRoom(this.state.username, other_user, room_name, history);
   }
 
   componentDidMount() {
@@ -85,10 +132,14 @@ class App extends Component {
           </Col>
         </Row>
         <Row>
-          {this.state.rooms.map((room) => {
+          {this.state.currRooms.map((room) => {
             return (
               <Col key={room['name']} xs="6" sm="3">
-                <MessageBox username={this.state.username} other_user={room['other_user']} history={room['history']} onClose={this.delRoom} socket={socket} />
+                <MessageBox username={this.state.username} other_user={room['other_user']} history={room['history']} onAddHistory={function(msg) {
+                  room['history'].push(msg);
+                  console.log(room['history']);
+                  console.log("adding to history " + msg);
+                }} onClose={this.delRoom} socket={socket} />
               </Col>
             )
           })}

@@ -10,11 +10,16 @@ import {
 class MessageNavbar extends Component {
   constructor(props) {
     super(props);
-    this.onClose = this.onClose.bind(this);
+    this.finalCleanup = this.finalCleanup.bind(this);
   }
 
-  onClose() {
+  finalCleanup() {
     this.props.onClose(this.props.other_user);
+    window.removeEventListener('beforeunload', this.finalCleanup);
+  }
+
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.finalCleanup);
   }
 
   render() {
@@ -23,7 +28,7 @@ class MessageNavbar extends Component {
         <NavbarBrand>{this.props.other_user}</NavbarBrand>
         <Nav className="ml-auto" navbar>
           <NavItem>
-            <Button onClick={this.onClose} close />
+            <Button onClick={this.finalCleanup} close />
           </NavItem>
         </Nav>
       </Navbar>

@@ -101,7 +101,6 @@ def on_join(data):
         if not username:
             return False
         other_user = data['other_user']
-        history = data['history']
         room = getRoom(username, other_user)
         join_room(room)
         emit('enter', (username + ' has entered the room.', username, other_user), room=room)
@@ -117,7 +116,6 @@ def on_leave(data):
         if not username:
             return False
         other_user = data['other_user']
-        #history = data['history']
         room = getRoom(username, other_user)
         leave_room(room)
         emit('exit', (username + ' has left the room.', username, other_user), room=room)
