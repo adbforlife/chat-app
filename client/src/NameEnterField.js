@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Input } from 'reactstrap';
 
-let maxLength = 16;
+let maxLength = 20;
 
 function NameInput(props) {
   if (!props.username) {

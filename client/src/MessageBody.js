@@ -29,52 +29,58 @@ class MessageBody extends Component {
     });
   }
 
+  onMessage = (msg,username,other_user) => {
+    let string = username + ": " + msg;
+    this.updateMessages(string, username, other_user);
+    if (!this.props.isAlone) {
+      if (!this.checkMessageOrigin(username, other_user)) return;
+      console.log("im not alone");
+      this.props.onAddHistory(string);
+    }
+  }
+
+  onEnter = (msg,username,other_user) => {
+    this.updateMessages(msg, username, other_user);
+    this.props.socket.emit('request', JSON.stringify({
+      username: this.props.username,
+      other_user: this.props.other_user
+    }));
+  }
+
+  onExit = (msg,username,other_user) => {
+    this.updateMessages(msg, username, other_user);
+    if (username !== this.props.username) {
+      this.props.changeIsAlone(true);
+    }
+  }
+
+  onRequestInfo = () => {
+    this.props.socket.emit('give_user', JSON.stringify({
+      username: this.props.username,
+      other_user: this.props.other_user
+    }))
+  }
+
+  onReceiveUser = (username) => {
+    if (username !== this.props.username) {
+      this.props.changeIsAlone(false);
+    }
+  }
+
   componentDidMount() {
-    this.props.socket.on('message', (msg,username,other_user) => {
-      let string = username + ": " + msg;
-      this.updateMessages(string, username, other_user);
-      if (!this.props.isAlone) {
-        if (!this.checkMessageOrigin(username, other_user)) return;
-        console.log("im not alone");
-        this.props.onAddHistory(string);
-      }
-    });
-
-    this.props.socket.on('enter', (msg,username,other_user) => {
-      this.updateMessages(msg, username, other_user);
-      this.props.socket.emit('request', JSON.stringify({
-        username: this.props.username,
-        other_user: this.props.other_user
-      }));
-    });
-
-    this.props.socket.on('exit', (msg,username,other_user) => {
-      this.updateMessages(msg, username, other_user);
-      if (username !== this.props.username) {
-        this.props.changeIsAlone(true);
-      }
-    });
-
-    this.props.socket.on('request_info', () => {
-      this.props.socket.emit('give_user', JSON.stringify({
-        username: this.props.username,
-        other_user: this.props.other_user
-      }))
-    })
-
-    this.props.socket.on('receive_user', (username) => {
-      if (username !== this.props.username) {
-        this.props.changeIsAlone(false);
-      }
-    });
+    this.props.socket.on('message', this.onMessage);
+    this.props.socket.on('enter', this.onEnter);
+    this.props.socket.on('exit', this.onExit);
+    this.props.socket.on('request_info', this.onRequestInfo);
+    this.props.socket.on('receive_user', this.onReceiveUser);
   }
 
   componentWillUnmount() {
-    this.props.socket.removeAllListeners('message');
-    this.props.socket.removeAllListeners('enter');
-    this.props.socket.removeAllListeners('exit');
-    this.props.socket.removeAllListeners('request_info');
-    this.props.socket.removeAllListeners('receive_user');
+    this.props.socket.removeListener('message', this.onMessage);
+    this.props.socket.removeListener('enter', this.onEnter);
+    this.props.socket.removeListener('exit', this.onExit);
+    this.props.socket.removeListener('request_info', this.onRequestInfo);
+    this.props.socket.removeListener('receive_user', this.onReceiveUser);
   }
 
   render() {
