@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import MessageNavbar from './MessageNavbar';
 import MessageBody from './MessageBody';
 import MessageEnterField from './MessageEnterField';
-import { Card, CardHeader, CardBody, CardFooter, Container, Row } from 'reactstrap'; 
+import { 
+  Card, 
+  CardBody,
+  CardFooter,
+  CardHeader } from 'reactstrap'; 
 
 class MessageBox extends Component {
   constructor(props) {
@@ -24,13 +28,18 @@ class MessageBox extends Component {
     return (
       <Card>
         <CardHeader>
-          <MessageNavbar other_user={this.props.other_user} onClose={this.props.onClose}/>
+          <MessageNavbar other_user={this.props.other_user} 
+            onClose={this.props.onClose}/>
         </CardHeader>
         <CardBody>
-          <MessageBody username={this.props.username} other_user={this.props.other_user} history={this.props.history} isAlone={this.state.isAlone} changeIsAlone={this.changeIsAlone} onAddHistory={this.props.onAddHistory} socket={this.props.socket} />
+          <MessageBody username={this.props.username} 
+            other_user={this.props.other_user} history={this.props.history} 
+            isAlone={this.state.isAlone} changeIsAlone={this.changeIsAlone} 
+            onAddHistory={this.props.onAddHistory} socket={this.props.socket}/>
         </CardBody>
         <CardFooter>
-          <MessageEnterField username={this.props.username} other_user={this.props.other_user} socket={this.props.socket}/>
+          <MessageEnterField username={this.props.username} 
+            other_user={this.props.other_user} socket={this.props.socket}/>
         </CardFooter>
       </Card>
     );

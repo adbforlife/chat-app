@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import NameEnterField from './NameEnterField';
 import NameDropdown from './NameDropdown';
-import { FormText, FormGroup, FormFeedback, Container, Row, Col, Badge } from 'reactstrap';
+import { Row, Col, Badge } from 'reactstrap';
 
 class NameBox extends Component {
   constructor(props) {
@@ -15,6 +15,7 @@ class NameBox extends Component {
     this.onUpdate = this.onUpdate.bind(this);
   }
 
+  // Handle user entering username.
   onUpdate(val) {
     if (!val) return;
     if (this.dropdown.current.isInList(val)) {
@@ -30,21 +31,23 @@ class NameBox extends Component {
   render() {
     let greeting;
     if (this.props.username) {
-      greeting = <h3>Hello, <Badge color="secondary">{this.props.username}</Badge>!</h3>;
+      greeting = (
+        <h3>Hello, 
+          <Badge color="secondary">{this.props.username}</Badge>!
+        </h3>
+      );
     }
     return (
-      /*<div>
-        {greeting}
-        <NameEnterField username={this.props.username} onUpdate={this.onUpdate}/>
-        <NameDropdown username={this.props.username} dropdownDisabled={this.state.dropdownDisabled} onConverse={this.props.onConverse} socket={this.props.socket}/>
-      </div>*/
       <Row>
         <Col lg="auto" md="auto" sm="auto">
           {greeting}
-          <NameEnterField ref={this.enterField} username={this.props.username} onUpdate={this.onUpdate}/>
+          <NameEnterField ref={this.enterField} username={this.props.username}
+            onUpdate={this.onUpdate}/>
         </Col>
         <Col lg="auto" md="auto" sm="auto">
-          <NameDropdown ref={this.dropdown} username={this.props.username} dropdownDisabled={this.state.dropdownDisabled} onConverse={this.props.onConverse} socket={this.props.socket}/>
+          <NameDropdown ref={this.dropdown} username={this.props.username}
+            dropdownDisabled={this.state.dropdownDisabled} 
+            onConverse={this.props.onConverse} socket={this.props.socket}/>
         </Col>
       </Row>
     );

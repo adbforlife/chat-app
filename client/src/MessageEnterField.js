@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Input, InputGroup, InputGroupAddon } from 'reactstrap';
+import { 
+  Button, 
+  Input, 
+  InputGroup, 
+  InputGroupAddon } from 'reactstrap';
 
 class MessageEnterField extends Component {
   constructor(props) {
@@ -17,6 +21,7 @@ class MessageEnterField extends Component {
   }
 
   handleChange(event) {
+    // Avoid empty messages.
     if (event.target.value) {
       this.setState({disabled: false})
     } else {
@@ -35,6 +40,7 @@ class MessageEnterField extends Component {
     this.onEnter();
   }
 
+  // Handles user hitting enter or clicking button.
   onEnter() {
     if (!this.state.value) return;
     this.props.socket.emit('message', JSON.stringify({
@@ -49,8 +55,14 @@ class MessageEnterField extends Component {
   render() {
     return (
       <InputGroup>
-        <Input placeholder="Type a message..." type="text" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
-        <InputGroupAddon addonType="append"><Button disabled={this.state.disabled} onClick={this.handleEnter}>Send</Button></InputGroupAddon>
+        <Input placeholder="Type a message..." type="text" 
+          value={this.state.value} onChange={this.handleChange} 
+          onKeyPress={this.handleKeyPress} />
+        <InputGroupAddon addonType="append">
+          <Button disabled={this.state.disabled} onClick={this.handleEnter}>
+            Send
+          </Button>
+        </InputGroupAddon>
       </InputGroup>
     );
   }

@@ -3,7 +3,7 @@ import './App.css';
 import io from 'socket.io-client';
 import MessageBox from './MessageBox';
 import NameBox from './NameBox';
-import { Navbar, NavbarBrand, Container, Row, Col } from 'reactstrap';
+import { Navbar, NavbarBrand, Container, Row } from 'reactstrap';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 const ResponsiveGridLayout = WidthProvider(Responsive);
 const socket = io('http://localhost:5001');
@@ -18,27 +18,31 @@ class App extends Component {
     }
 
     this.storeRoom = this.storeRoom.bind(this);
-    this.hydrateStateWithLocalStorage = this.hydrateStateWithLocalStorage.bind(this);
+    this.hydrateStateWithLocalStorage = 
+      this.hydrateStateWithLocalStorage.bind(this);
     this.saveRoomsToLocalStorage = this.saveRoomsToLocalStorage.bind(this);
     this.getRoomName = this.getRoomName.bind(this);
     this.finalCleanup = this.finalCleanup.bind(this);
   }
 
+  // Clean up before user exits or refreshes.
   finalCleanup() {
     socket.emit('broadcast_del', this.state.username);
     window.removeEventListener('beforeunload', this.finalCleanup);
   }
 
+  // Store room history upon exiting chat rooms or exiting page.
   storeRoom(username,other_user,room_name,history) {
+    // Update history if room already exists.
     for (var i = 0; i < this.state.storedRooms.length; i++) {
       if (this.state.storedRooms[i]['room_name'] === room_name) {
         let room = this.state.storedRooms[i];
         room['history'] = history;
-        console.log(this.state.storedRooms);
         this.saveRoomsToLocalStorage();
         return;
       }
     }
+    // Add history if room does not exist.
     this.setState({
       storedRooms: [...this.state.storedRooms, {
         username: username,
@@ -50,12 +54,9 @@ class App extends Component {
       this.saveRoomsToLocalStorage();
       socket.emit('hydrate');
     });
-    //this.saveRoomsToLocalStorage();
-    setTimeout(function() {
-      console.log(this.state.storedRooms);
-    }.bind(this), 1000);
   }
 
+  // Load chat history from local storage.
   hydrateStateWithLocalStorage() {
     let key = 'storedRooms'
     if (localStorage.hasOwnProperty(key)) {
@@ -64,20 +65,21 @@ class App extends Component {
         value = JSON.parse(value);
         this.setState({ storedRooms: value });
       } catch (e) {
-        // handle empty string
+        // Handle empty string.
         this.setState({ storedRooms: value });
       }
     }
   }
 
+  // Save chat history to local storage.
   saveRoomsToLocalStorage() {
-    localStorage.setItem('storedRooms', JSON.stringify(this.state.storedRooms));
+    localStorage.setItem('storedRooms',JSON.stringify(this.state.storedRooms));
   }
 
+  // Register username when user enters; passed to children.
   changeUsername = (name) => {
     if (this.state.username) {
       return;
-      //socket.emit('broadcast_del', this.state.username);
     }
     this.setState({
       username: name
@@ -86,23 +88,29 @@ class App extends Component {
     });
   }
 
+  // Construct room name from users.
   getRoomName(username, other_user) {
     return [this.state.username, other_user].join('');
   }
 
+  // Add to list of current rooms (and checking if there's stored history)
   addRoom = (other_user) => {
+    // Abort if room already exists on page.
     for (var i = 0; i < this.state.currRooms.length; i++) {
       if (this.state.currRooms[i]['other_user'] === other_user)
         return false;
     }
     let room_name = this.getRoomName(this.state.username, other_user);
     var history = []
+    // Check stored history for the specific room.
     for (var j = 0; j < this.state.storedRooms.length; j++) {
-      if (this.state.storedRooms[j]['room_name'] === room_name && this.state.storedRooms[j]['username'] === this.state.username) {
+      if (this.state.storedRooms[j]['room_name'] === room_name 
+        && this.state.storedRooms[j]['username'] === this.state.username) {
         history = this.state.storedRooms[j]['history'];
         break;
       }
     }
+    // Update state of current rooms.
     this.setState({
       currRooms: [...this.state.currRooms, {
         username: this.state.username,
@@ -111,17 +119,18 @@ class App extends Component {
         history: history
       }]
     });
+    // Join room on server.
     socket.emit('join', JSON.stringify({
       username: this.state.username,
       other_user: other_user
     }));
   }
 
+  // Handles deleting room in all situations.
   delRoom = (other_user) => {
     let room_name = this.getRoomName(this.state.username, other_user);
     var history = [];
-    console.log("closing" + room_name)
-    console.log(this.state.currRooms);
+    // Extract room history before deleting.
     this.setState({currRooms: this.state.currRooms.filter(function(room) { 
         let same_name = (room['name'] === room_name);
         if (same_name) {
@@ -129,8 +138,6 @@ class App extends Component {
         }
         return !same_name;
     })}, () => {
-      console.log(this.state.currRooms);
-      console.log(history);
       let room = {
         username: this.state.username,
         other_user: other_user,
@@ -138,43 +145,45 @@ class App extends Component {
       socket.emit('leave', JSON.stringify(room));
       this.storeRoom(this.state.username, other_user, room_name, history);
     });
-    /*console.log(this.state.currRooms);
-    console.log(history);
-    let room = {
-      username: this.state.username,
-      other_user: other_user,
-    }
-    socket.emit('leave', JSON.stringify(room));
-    this.storeRoom(this.state.username, other_user, room_name, history);*/
   }
 
   componentDidMount() {
+    // Set background color.
     document.body.style = 'background: #f0f0f0;';
+    // Get chat history from local storage.
     this.hydrateStateWithLocalStorage();
+    // Handles server requesting username.
     socket.on('username_request', () => {
       if (this.state.username) {
         socket.emit('broadcast_add', this.state.username);
       }
     });
+    // Handles server requesting history update (mainly for local purposes).
     socket.on('hydrate', () => {
       this.hydrateStateWithLocalStorage();
     })
+    // Handles user exiting page or refreshing.
     window.addEventListener('beforeunload', this.finalCleanup);
   }
 
+  // Produce layout for message boxes (updated whenever there's a change).
   getLayout(room_names, num_cols) {
     var layout = []
     for (var i = 0; i < room_names.length; i++) {
-      layout.push(
-        {i: 'Room' + room_names[i], x: (i*2)%num_cols, y: 2*(Math.floor(2*i/num_cols)), w: 2, h: 2, static: true}
-      );
+      layout.push({
+        i: 'Room' + room_names[i], 
+        x: (i*2)%num_cols, 
+        y: 2*(Math.floor(2*i/num_cols)), 
+        w: 2, 
+        h: 2, 
+        static: true
+      });
     }
     return layout;
   }
 
   render() {
     let room_names = this.state.currRooms.map(room => room['name']);
-    //let num_rooms = this.state.currRooms.length;
     var layouts = {
       lg: this.getLayout(room_names,12),
       md: this.getLayout(room_names,8),
@@ -191,22 +200,24 @@ class App extends Component {
         </Navbar>
         <Container>
           <Row style={{height: 30}}></Row>
-          <NameBox username={this.state.username} onUpdate={this.changeUsername} onConverse={this.addRoom} socket={socket}/>
+          <NameBox username={this.state.username} 
+            onUpdate={this.changeUsername} 
+            onConverse={this.addRoom} socket={socket}/>
           <ResponsiveGridLayout className="layout" layouts={layouts} 
             breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
             cols={{lg: 12, md: 8, sm: 6, xs: 4, xxs: 2}} rowHeight={200}>
             {this.state.currRooms.map((room,index) => {
               return (
                 <div key={'Room' + room['name']}>
-                  <MessageBox username={this.state.username} other_user={room['other_user']} history={room['history']} onAddHistory={function(msg, type, username) {
-                    room['history'].push({
-                      message: msg,
-                      type: type,
-                      username: username
-                    });
-                    console.log(room['history']);
-                    console.log("adding to history " + msg);
-                  }} onClose={this.delRoom} socket={socket} />
+                  <MessageBox username={this.state.username} 
+                    other_user={room['other_user']} history={room['history']} 
+                    onAddHistory={function(msg, type, username) {
+                      room['history'].push({
+                        message: msg,
+                        type: type,
+                        username: username
+                      });
+                    }} onClose={this.delRoom} socket={socket} />
                 </div>
               );
             })}

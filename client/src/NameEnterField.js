@@ -1,12 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FormText, FormGroup, FormFeedback, Button, Input, InputGroup, InputGroupAddon } from 'reactstrap';
+import { 
+  Button,
+  FormGroup,
+  FormText,
+  Input,
+  InputGroup,
+  InputGroupAddon } from 'reactstrap';
 
-let maxLength = 20;
+const maxLength = 20;
 
 function NameInput(props) {
   if (!props.username) {
-    return <Input invalid={props.invalid} placeholder="Type your name..." type="text" value={props.value} onChange={props.onChange} onKeyPress={props.onKeyPress} />;
+    return <Input invalid={props.invalid} placeholder="Type your name..."
+      type="text" value={props.value} onChange={props.onChange} 
+      onKeyPress={props.onKeyPress} />;
   } else {
     return null;
   }
@@ -36,7 +44,9 @@ class NameEnterField extends Component {
   }
 
   handleChange(event) {
+    // Dismiss invalid box when user starts typing.
     if (this.state.invalid) this.changeValidity(false);
+    // Avoid username too long.
     if (event.target.value.length > maxLength) return;
     this.setState({value: event.target.value});
   }
@@ -51,7 +61,9 @@ class NameEnterField extends Component {
     this.onEnter();
   }
 
+  // Call onUpdate passed from parent.
   onEnter() {
+    // Avoid white spaces at beginning and end.
     let val = this.state.value.trim();
     if (!val) {
       this.setState({value: ''})
@@ -71,11 +83,18 @@ class NameEnterField extends Component {
     return (
       <FormGroup>
         <InputGroup>
-          <NameInput username={this.props.username} invalid={this.state.invalid} value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
-          <InputGroupAddon addonType="append"><NameEnterButton username={this.props.username} onClick={this.handleEnter} /></InputGroupAddon>
+          <NameInput username={this.props.username} invalid={this.state.invalid}
+          value={this.state.value} onChange={this.handleChange} 
+          onKeyPress={this.handleKeyPress}/>
+          <InputGroupAddon addonType="append">
+            <NameEnterButton username={this.props.username}
+            onClick={this.handleEnter} />
+          </InputGroupAddon>
         </InputGroup>
         {
-          this.state.invalid ? <FormText>That name is already taken</FormText> : null
+          this.state.invalid 
+          ? <FormText>That name is already taken</FormText> 
+          : null
         }
       </FormGroup>
     );

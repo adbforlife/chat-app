@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'reactstrap';
 import {
+  Button,
+  Nav,
   Navbar,
   NavbarBrand,
-  Nav,
   NavItem, } from 'reactstrap';
 
 class MessageNavbar extends Component {
@@ -13,6 +13,7 @@ class MessageNavbar extends Component {
     this.finalCleanup = this.finalCleanup.bind(this);
   }
 
+  // Clean up when user closes chatbox or refreshes or exits.
   finalCleanup() {
     this.props.onClose(this.props.other_user);
     window.removeEventListener('beforeunload', this.finalCleanup);
