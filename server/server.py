@@ -4,7 +4,7 @@ import json
 import hashlib
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'mysecret'
+app.config['SECRET_KEY'] = b"\xa1H\x81\xc10\xd72\xdf:'\xd6\xb7\xe0\x01\xca-"
 socketio = SocketIO(app)
 
 '''
@@ -136,4 +136,4 @@ def on_hydrate():
 
 if __name__ == '__main__':
 	tempUsers = []
-	socketio.run(app, host='127.0.0.1', port=5001, debug=True)
+	socketio.run(app, host='127.0.0.1', port=5001)
