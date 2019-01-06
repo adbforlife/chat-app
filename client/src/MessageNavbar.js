@@ -28,7 +28,9 @@ class MessageNavbar extends Component {
         <NavbarBrand>{this.props.other_user}</NavbarBrand>
         <Nav className="ml-auto" navbar>
           <NavItem>
-            <Button onClick={this.finalCleanup} close />
+            <Button onClick={() => {
+              this.props.onClose(this.props.other_user);
+            }} close />
           </NavItem>
         </Nav>
       </Navbar>

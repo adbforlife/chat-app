@@ -40,7 +40,6 @@ class MessageBody extends Component {
 
   updateMessages(msg, username, other_user, type) {
     console.log("got a good message!" + msg + username + other_user);
-    if (!this.checkMessageOrigin(username, other_user)) return;
     if (type === 'enter_exit') {
       username = '';
     }
@@ -54,6 +53,7 @@ class MessageBody extends Component {
   }
 
   onMessage = (msg,username,other_user) => {
+    if (!this.checkMessageOrigin(username, other_user)) return;
     //let string = username + ": " + msg;
     let type = username===this.props.username ? 'self' : 'others'
     this.updateMessages(msg, username, other_user, type);
@@ -65,6 +65,7 @@ class MessageBody extends Component {
   }
 
   onEnter = (msg,username,other_user) => {
+    if (!this.checkMessageOrigin(username, other_user)) return;
     this.updateMessages(msg, username, other_user, 'enter_exit');
     this.props.socket.emit('request', JSON.stringify({
       username: this.props.username,
@@ -73,6 +74,7 @@ class MessageBody extends Component {
   }
 
   onExit = (msg,username,other_user) => {
+    if (!this.checkMessageOrigin(username, other_user)) return;
     this.updateMessages(msg, username, other_user, 'enter_exit');
     if (username !== this.props.username) {
       this.props.changeIsAlone(true);
@@ -92,10 +94,6 @@ class MessageBody extends Component {
     }
   }
 
-  renderMessage = (msg) => {
-
-  }
-
   scrollToBottom = () => {
     this.messagesEnd.scrollIntoView({ behavior: "smooth" });
   }
@@ -107,7 +105,6 @@ class MessageBody extends Component {
     this.props.socket.on('request_info', this.onRequestInfo);
     this.props.socket.on('receive_user', this.onReceiveUser);
     this.scrollToBottom();
-    console.log(this.state.messages);
   }
 
   componentDidUpdate() {
