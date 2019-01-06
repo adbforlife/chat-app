@@ -6,7 +6,7 @@ In the server directory, you can run:
 
 ### `python3 server.py`
 
-Runs flask app at [http://localhost:5000]
+Runs flask app at http://localhost:5001
 
 ## Client
 
