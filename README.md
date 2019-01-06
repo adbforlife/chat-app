@@ -4,7 +4,7 @@ This project was built with React and Flask.
 
 In the server directory, you can run:
 
-### 'python3 server.py'
+### `python3 server.py`
 
 Runs flask app at [http://localhost:5000]
 
