@@ -1,14 +1,15 @@
-from flask import Flask, url_for
-from flask_socketio import SocketIO, emit, send, join_room, leave_room
+from flask import Flask
+from flask_socketio import SocketIO, emit, join_room, leave_room
 import json
 import hashlib
-
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app)
 
-
+'''
+Handles username list updates.
+'''
 @socketio.on('broadcast_request')
 def request():
     emit('username_request', broadcast=True)
@@ -25,9 +26,6 @@ def user_del(data):
         return
     emit('user_list_del', data, broadcast=True)
 
-
-
-
 @socketio.on('connect')
 def on_connect():
     print('user connected')
@@ -36,6 +34,11 @@ def on_connect():
 def on_disconnect():
     emit('refresh', broadcast=True)
 
+
+
+'''
+Handles messaging within rooms.
+'''
 def sha256_string(string):
     '''
     :type string: string
@@ -62,7 +65,6 @@ def handle_message(data):
     except:
         print("something is wrong\n\n\n")
         return False
-    print(msg, username, other_user)
     emit('message', (msg, username, other_user), room=room)
 
 @socketio.on('join')
@@ -90,12 +92,16 @@ def on_leave(data):
         other_user = data['other_user']
         room = getRoom(username, other_user)
         leave_room(room)
-        print(username + ' has left the room.', username, other_user)
         emit('exit', (username + ' has left the room.', username, other_user), room=room)
     except:
         print("something is wrong\n\n\n")
         return False
 
+
+
+'''
+Handles other user requests.
+'''
 @socketio.on('request')
 def request_info(data):
     try:
