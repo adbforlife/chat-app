@@ -113,6 +113,7 @@ def on_leave(data):
         other_user = data['other_user']
         room = getRoom(username, other_user)
         leave_room(room)
+        print(username + ' has left the room.', username, other_user)
         emit('exit', (username + ' has left the room.', username, other_user), room=room)
     except:
         print("something is wrong\n\n\n")

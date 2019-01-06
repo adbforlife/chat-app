@@ -182,7 +182,6 @@ class App extends Component {
       xs: this.getLayout(room_names,4),
       xxs: this.getLayout(room_names,2),
     }
-    console.log(layouts)
     return (
       <div>
         <Navbar color="secondary">
